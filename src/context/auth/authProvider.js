@@ -10,12 +10,16 @@ const initialState = {
 const authProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, initialState);
 
-  const signIn = () => {
+  const login = () => {
     dispatch({ type: "SIGN_IN" });
   };
 
+  const logout = () => {
+    dispatch({ type: "LOG_OUT" });
+  };
+
   return (
-    <authContext.Provider value={{ authState, signIn }}>
+    <authContext.Provider value={{ authState, login, logout }}>
       {children}
     </authContext.Provider>
   );

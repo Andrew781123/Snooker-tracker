@@ -1,11 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
-import authContext from "../context/auth/authContext";
 
 const DashBoardScreen = props => {
   const { navigation } = props;
-  const { authState } = useContext(authContext);
-  console.log(authState);
 
   return (
     <View>
