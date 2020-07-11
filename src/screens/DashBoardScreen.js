@@ -1,10 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 
-const DashBoardScreen = () => {
+const DashBoardScreen = props => {
+  const { navigation } = props;
+
   return (
     <View>
       <Text>DashBoard</Text>
+      <Button
+        title='New Battle'
+        onPress={() => navigation.navigate("Battle", { screen: "New_Battle" })}
+      />
     </View>
   );
 };
