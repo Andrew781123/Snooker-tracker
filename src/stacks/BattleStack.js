@@ -9,9 +9,17 @@ const Stack = createStackNavigator();
 const BattleStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerLeft: null }}>
-      <Stack.Screen name='New_Battle' component={NewBattleScreen} />
+      <Stack.Screen
+        name='New_Battle'
+        component={NewBattleScreen}
+        options={{ title: "New Battle" }}
+      />
       <Stack.Screen name='Battle' component={BattleScreen} />
-      <Stack.Screen name='Battle_Result' component={BattleResultScreen} />
+      <Stack.Screen
+        name='Battle_Result'
+        component={BattleResultScreen}
+        options={{ title: "Results" }}
+      />
     </Stack.Navigator>
   );
 };
