@@ -4,6 +4,8 @@ import CheckBox from "@react-native-community/checkbox";
 
 const initialMatchState = {
   frameNum: 1,
+  playerOneName: "Andrew",
+  playerTwoName: "Felix",
   player_1BreakOff: true,
   player_2BreakOff: false
 };
@@ -57,11 +59,13 @@ const NewBattleScreen = props => {
 
   const handleStartMatch = () => {
     const playerToBreakOff = matchOptions.player_1BreakOff
-      ? "Player1"
-      : "Player2";
+      ? matchOptions.playerOneName
+      : matchOptions.playerTwoName;
     navigation.navigate("Battle", {
       frameNum: matchOptions.frameNum,
-      playerToBreakOff
+      playerToBreakOff,
+      playerOneName: matchOptions.playerOneName,
+      playerTwoName: matchOptions.playerTwoName
     });
   };
 
