@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Ball = props => {
-  const { color, score, handleClick } = props;
+  const { color, score, handleClick, currentColor } = props;
+
+  const disable =
+    currentColor === null || currentColor === color || props.text
+      ? false
+      : true;
 
   return (
     <TouchableOpacity
+      disabled={disable}
       style={{ ...styles.ballStyle, backgroundColor: color }}
-      onPress={() => handleClick(score && score, score === 1 && true)}
+      onPress={() => handleClick(score && score)}
     >
       <Text style={{ textAlign: "center", marginTop: 15, color: "white" }}>
         {props.text && props.text}

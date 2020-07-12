@@ -5,24 +5,46 @@ const ScoreBoard = props => {
   const {
     player_1Score,
     player_2Score,
+    playerOneFrame,
+    playerTwoFrame,
     playerOneName,
     playerTwoName,
-    frameNum
+    frameNum,
+    isPlayerOneTurn
   } = props;
 
   return (
     <View style={styles.scoreBoard}>
-      <Text style={{ ...styles.name, left: 3 }}>{playerOneName}</Text>
+      <Text
+        style={{
+          ...styles.name,
+          left: 3,
+          color: isPlayerOneTurn ? "red" : "black"
+        }}
+      >
+        {playerOneName}
+      </Text>
       <View style={styles.scores}>
         <Text style={{ fontSize: 20 }}>{player_1Score}</Text>
         <View style={styles.frameNum}>
-          <Text style={{ fontSize: 20 }}>0</Text>
+          <Text style={{ fontSize: 20 }}>{playerOneFrame}</Text>
           <Text style={{ fontSize: 20 }}>({frameNum})</Text>
-          <Text style={{ fontSize: 20 }}>0</Text>
+          <Text style={{ fontSize: 20 }}>{playerTwoFrame}</Text>
         </View>
         <Text style={{ fontSize: 20 }}>{player_2Score}</Text>
       </View>
-      <Text style={{ ...styles.name, right: 3 }}>{playerTwoName}</Text>
+      <Text
+        style={{
+          ...styles.name,
+          right: 3,
+          color:
+            isPlayerOneTurn || isPlayerOneTurn === null
+              ? "black"
+              : isPlayerOneTurn === false && "red"
+        }}
+      >
+        {playerTwoName}
+      </Text>
     </View>
   );
 };
@@ -45,7 +67,7 @@ const styles = StyleSheet.create({
   },
   scoreBoard: {
     marginTop: 30,
-    marginBottom: 30,
+    marginBottom: 5,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",

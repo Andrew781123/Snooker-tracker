@@ -4,20 +4,31 @@ import balls from "../resources/ballInfo";
 import Ball from "./Ball";
 
 const ColorBalls = props => {
-  const { handlePot, handleMiss, handleFoul } = props;
+  const { handlePot, handleMiss, handleFoul, currentColor } = props;
 
   return (
     <View style={styles.balls}>
-      <Ball color='gray' text='foul' handleClick={handleFoul} />
+      <Ball
+        color='gray'
+        text='foul'
+        handleClick={handleFoul}
+        currentColor={currentColor}
+      />
       {balls.map(ball => (
         <Ball
           key={ball.score}
           color={ball.color}
           score={ball.score}
           handleClick={handlePot}
+          currentColor={currentColor}
         />
       ))}
-      <Ball color='gray' text='miss' handleClick={handleMiss} />
+      <Ball
+        color='gray'
+        text='miss'
+        handleClick={handleMiss}
+        currentColor={currentColor}
+      />
     </View>
   );
 };

@@ -1,18 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import Ball from "../components/Ball";
 import ScoreBoard from "../components/ScoreBoard";
 import ColorBalls from "../components/ColorBalls";
+import matchReducer from "./Reducers/matchReducer";
+import ScoresRemaining from "../components/ScoresRemaining";
+import balls from "../resources/ballInfo";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import BigText from "../components/BigText";
+import Break from "../components/Break";
 
 const initialMatchInfo = {
+  playerOneStat: {
+    attempt: 0,
+    ballsPotted: 0,
+    highestBreak: 0
+  },
+  playerTwoStat: {
+    attempt: 0,
+    ballsPotted: 0,
+    highestBreak: 0
+  },
   frame: 1,
+  currentBreak: 0,
+  playerToBreakOff: null,
   isPlayerOneTurn: null,
   isFoul: false,
   isRedNext: true,
-  redsRemaining: 15,
+  redsRemaining: 6,
   scoresRemaining: 147,
   player_1Score: 0,
-  player_2Score: 0
+  player_2Score: 0,
+  playerOneFrame: 0,
+  playerTwoFrame: 0,
+  currentColor: null,
+  frameWinnder: null,
+  matchWinnder: null
 };
 
 const BattleScreen = props => {
@@ -25,64 +48,109 @@ const BattleScreen = props => {
     playerTwoName
   } = route.params;
 
-  const [matchInfo, setMatchInfo] = useState(initialMatchInfo);
+  const [matchInfo, dispatch] = useReducer(matchReducer, initialMatchInfo);
 
   useEffect(() => {
-    setMatchInfo({
-      ...matchInfo,
-      isPlayerOneTurn: playerToBreakOff === playerOneName ? true : false,
-      playerOneName,
-      playerTwoName
+    dispatch({
+      type: "MATCH_INIT",
+      payload: { playerToBreakOff, playerOneName, playerTwoName }
     });
-    console.log(matchInfo.redsRemaining);
   }, []);
 
-  const handlePot = (score, isRed) => {
-    setMatchInfo(info => ({
-      ...info,
-      redsRemaining: isRed ? info.redsRemaining - 1 : info.redsRemaining,
-      isRedNext: !info.isRedNext,
-      player_1Score: info.isPlayerOneTurn
-        ? (info.player_1Score += score)
-        : info.player_1Score,
-      player_2Score: !info.isPlayerOneTurn
-        ? (info.player_2Score += score)
-        : info.player_2Score
-    }));
+  const handlePot = score => {
+    if (matchInfo.currentColor !== null) {
+      const nextColorBall = balls[score - 1];
+      dispatch({
+        type: "POT_COLOR",
+        payload: {
+          score,
+          nextColor:
+            typeof nextColorBall !== "undefined"
+              ? nextColorBall.color
+              : "game-over"
+        }
+      });
+      if (matchInfo.currentColor === "black") {
+        if (matchInfo.player_1Score === matchInfo.player_2Score) {
+          dispatch({ type: "DRAW" });
+        }
+        if (matchInfo.frame === frameNum) {
+          console.log("game_over");
+          dispatch({
+            type: "MATCH_OVER",
+            matchWinner:
+              matchInfo.playerOneFrame > matchInfo.playerTwoFrame
+                ? matchInfo.playerOneName
+                : matchInfo.playerTwoFrame > playerOneFrame
+                ? matchInfo.playerTwoName
+                : "draw"
+          });
+        } else {
+          const winner = determineWinner(
+            matchInfo.player_1Score,
+            matchInfo.player_2Score,
+            matchInfo.playerOneName,
+            matchInfo.playerTwoName
+          );
+          dispatch({ type: "FRAME_OVER", payload: winner });
+        }
+      }
+    } else {
+      dispatch({ type: "POT", payload: { score } });
+    }
   };
 
   const handleMiss = () => {
-    setMatchInfo(info => ({
-      ...info,
-      isRedNext: true,
-      isPlayerOneTurn: !info.isPlayerOneTurn
-    }));
+    dispatch({ type: "MISS" });
   };
 
   const handleFoul = () => {};
 
+  const startNewFrame = () => {
+    dispatch({ type: "START_NEW_FRAME" });
+  };
+
   return (
     <View>
-      <View style={styles.bigTextContainer}>
-        <Text style={styles.bigText}>
-          {matchInfo.isPlayerOneTurn ? playerOneName : playerTwoName}'s turn
-        </Text>
-      </View>
+      <Text>{matchInfo.playerOneStat.highestBreak}</Text>
+      <Text>{matchInfo.playerTwoStat.highestBreak}</Text>
+
+      <Text>{matchInfo.redsRemaining}</Text>
+      <BigText text='hello' />
+      <TouchableOpacity onPress={startNewFrame}>
+        <Text>New Frame</Text>
+      </TouchableOpacity>
       <View>
         <Text>{playerToBreakOff} break off</Text>
       </View>
       <View style={styles.balls}>
         {matchInfo.isRedNext ? (
           <>
-            <Ball color='gray' text='foul' handleClick={handleFoul} />
-            <Ball color='red' score={1} handleClick={handlePot} />
-            <Ball color='gray' text='miss' handleClick={handleMiss} />
+            <Ball
+              color='gray'
+              text='foul'
+              handleClick={handleFoul}
+              currentColor={matchInfo.currentColor}
+            />
+            <Ball
+              color='red'
+              score={1}
+              handleClick={handlePot}
+              currentColor={matchInfo.currentColor}
+            />
+            <Ball
+              color='gray'
+              text='miss'
+              handleClick={handleMiss}
+              currentColor={matchInfo.currentColor}
+            />
           </>
         ) : (
           <ColorBalls
             handlePot={handlePot}
             handleFoul={handleFoul}
             handleMiss={handleMiss}
+            currentColor={matchInfo.currentColor}
           />
         )}
       </View>
@@ -90,10 +158,18 @@ const BattleScreen = props => {
       <ScoreBoard
         player_1Score={matchInfo.player_1Score}
         player_2Score={matchInfo.player_2Score}
+        playerOneFrame={matchInfo.playerOneFrame}
+        playerTwoFrame={matchInfo.playerTwoFrame}
         playerOneName={playerOneName}
         playerTwoName={playerTwoName}
         frameNum={frameNum}
+        isPlayerOneTurn={matchInfo.isPlayerOneTurn}
       />
+      <Break
+        isPlayerOneTurn={matchInfo.isPlayerOneTurn}
+        currentBreak={matchInfo.currentBreak}
+      />
+      <ScoresRemaining redsRemaining={matchInfo.redsRemaining} />
       <Button
         title='End'
         onPress={() => navigation.navigate("Battle_Result")}
@@ -110,16 +186,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 10
-  },
-  bigTextContainer: {
-    height: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#42c5f5"
-  },
-  bigText: {
-    fontSize: 40,
-    color: "white",
-    fontWeight: "bold"
   }
 });
+
+const determineWinner = (p1Score, p2Score, p1Name, p2Name) => {
+  return p1Score > p2Score ? p1Name : p2Name;
+};
