@@ -22,6 +22,7 @@ const initialMatchInfo = {
     highestBreak: 0
   },
   frame: 1,
+  framesInfo: [],
   currentBreak: 0,
   playerToBreakOff: null,
   isPlayerOneTurn: null,
@@ -34,8 +35,8 @@ const initialMatchInfo = {
   playerOneFrame: 0,
   playerTwoFrame: 0,
   currentColor: null,
-  frameWinnder: null,
-  matchWinnder: null
+  frameWinner: null,
+  matchWinner: null
 };
 
 const BattleScreen = props => {
@@ -60,16 +61,39 @@ const BattleScreen = props => {
   const handlePot = score => {
     if (matchInfo.currentColor !== null) {
       const nextColorBall = balls[score - 1];
-      dispatch({
-        type: "POT_COLOR",
-        payload: {
+      if (matchInfo.isPlayerOneTurn) {
+        const isUpdateHighestBreak = compareBreak(
           score,
-          nextColor:
-            typeof nextColorBall !== "undefined"
-              ? nextColorBall.color
-              : "game-over"
-        }
-      });
+          matchInfo.playerOneStat
+        );
+        dispatch({
+          type: "PLAYER_ONE_POT_COLOR",
+          payload: {
+            score,
+            isUpdateHighestBreak,
+            nextColor:
+              typeof nextColorBall !== "undefined"
+                ? nextColorBall.color
+                : "game-over"
+          }
+        });
+      } else {
+        const isUpdateHighestBreak = compareBreak(
+          score,
+          matchInfo.playerTwoStat
+        );
+        dispatch({
+          type: "PLAYER_TWO_POT_COLOR",
+          payload: {
+            score,
+            isUpdateHighestBreak,
+            nextColor:
+              typeof nextColorBall !== "undefined"
+                ? nextColorBall.color
+                : "game-over"
+          }
+        });
+      }
       if (matchInfo.currentColor === "black") {
         if (matchInfo.player_1Score === matchInfo.player_2Score) {
           dispatch({ type: "DRAW" });
@@ -81,7 +105,7 @@ const BattleScreen = props => {
             matchWinner:
               matchInfo.playerOneFrame > matchInfo.playerTwoFrame
                 ? matchInfo.playerOneName
-                : matchInfo.playerTwoFrame > playerOneFrame
+                : matchInfo.playerTwoFrame > matchInfo.playerOneFrame
                 ? matchInfo.playerTwoName
                 : "draw"
           });
@@ -92,30 +116,69 @@ const BattleScreen = props => {
             matchInfo.playerOneName,
             matchInfo.playerTwoName
           );
+
           dispatch({ type: "FRAME_OVER", payload: winner });
         }
       }
     } else {
-      dispatch({ type: "POT", payload: { score } });
+      if (matchInfo.isPlayerOneTurn) {
+        const isUpdateHighestBreak = compareBreak(
+          score,
+          matchInfo.playerOneStat
+        );
+
+        dispatch({
+          type: "PLAYER_ONE_POT",
+          payload: { score, isUpdateHighestBreak }
+        });
+      } else {
+        const isUpdateHighestBreak = compareBreak(
+          score,
+          matchInfo.playerTwoStat
+        );
+        dispatch({
+          type: "PLAYER_TWO_POT",
+          payload: { score, isUpdateHighestBreak }
+        });
+      }
     }
   };
 
   const handleMiss = () => {
-    dispatch({ type: "MISS" });
+    if (matchInfo.isPlayerOneTurn) {
+      dispatch({ type: "PLAYER_ONE_MISS" });
+    } else {
+      dispatch({ type: "PLAYER_TWO_MISS" });
+    }
   };
 
   const handleFoul = () => {};
 
   const startNewFrame = () => {
-    dispatch({ type: "START_NEW_FRAME" });
+    const fieldToEdit =
+      matchInfo.frameWinner === playerOneName
+        ? "playerOneFrame"
+        : "playerTwoFrame";
+    console.log(fieldToEdit);
+    dispatch({ type: "START_NEW_FRAME", payload: fieldToEdit });
+  };
+
+  const compareBreak = (score, stat) => {
+    return matchInfo.currentBreak + score > stat.highestBreak ? true : false;
   };
 
   return (
     <View>
-      <Text>{matchInfo.playerOneStat.highestBreak}</Text>
-      <Text>{matchInfo.playerTwoStat.highestBreak}</Text>
+      <Text>
+        player one highest break: {matchInfo.playerOneStat.highestBreak}
+      </Text>
+      <Text>
+        player two highest break: {matchInfo.playerTwoStat.highestBreak}
+      </Text>
+      <Text>{matchInfo.playerOneStat.attempt}</Text>
 
       <Text>{matchInfo.redsRemaining}</Text>
+      <Text>winner: {matchInfo.frameWinner}</Text>
       <BigText text='hello' />
       <TouchableOpacity onPress={startNewFrame}>
         <Text>New Frame</Text>

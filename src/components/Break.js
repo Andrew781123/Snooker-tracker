@@ -5,7 +5,15 @@ const Break = props => {
   const { isPlayerOneTurn, currentBreak } = props;
 
   return (
-    <View style={isPlayerOneTurn === true ? styles.p1Break : styles.p2Break}>
+    <View
+      style={
+        isPlayerOneTurn === true
+          ? styles.p1Break
+          : isPlayerOneTurn === false
+          ? styles.p2Break
+          : { display: "none" }
+      }
+    >
       <Text style={{ fontSize: 17 }}>Break: {currentBreak}</Text>
     </View>
   );
