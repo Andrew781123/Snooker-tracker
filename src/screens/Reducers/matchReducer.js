@@ -9,6 +9,9 @@ const updateMatchInfo = (state, score) => {
 
     isRedNext: state.redsRemaining === 0 ? false : !state.isRedNext,
 
+    scoreRemaining:
+      score === 1 ? state.scoreRemaining - 8 : state.scoreRemaining,
+
     player_1Score: state.isPlayerOneTurn
       ? (state.player_1Score += score)
       : state.player_1Score,
@@ -36,6 +39,8 @@ const matchReducer = (state, action) => {
       return {
         ...state,
         playerToBreakOff: action.payload.playerToBreakOff,
+
+        scoreRemaining: 8 * state.redsRemaining + 27,
         isPlayerOneTurn:
           action.payload.playerToBreakOff === action.payload.playerOneName
             ? true
@@ -97,6 +102,7 @@ const matchReducer = (state, action) => {
       const { score, isUpdateHighestBreak, nextColor } = action.payload;
       return {
         ...state,
+        scoreRemaining: state.scoreRemaining - score,
         playerOneStat: {
           ...state.playerOneStat,
           attempt: state.playerOneStat.attempt + 1,
@@ -116,6 +122,7 @@ const matchReducer = (state, action) => {
       const { score, isUpdateHighestBreak, nextColor } = action.payload;
       return {
         ...state,
+        scoreRemaining: state.scoreRemaining - score,
         playerTwoStat: {
           ...state.playerTwoStat,
           attempt: state.playerTwoStat.attempt + 1,
@@ -133,11 +140,25 @@ const matchReducer = (state, action) => {
     }
 
     case "FRAME_OVER": {
+      console.log("frameOver");
       const winner = action.payload;
       return {
         ...state,
         isPlayerOneTurn: null,
         frameWinner: winner
+      };
+    }
+    case "INCREMENT_FRAME": {
+      return {
+        ...state,
+        playerOneFrame:
+          state.frameWinner === state.playerOneName
+            ? state.playerOneFrame + 1
+            : state.playerOneFrame,
+        playerTwoFrame:
+          state.frameWinner === state.playerTwoName
+            ? state.playerTwoFrame + 1
+            : state.playerTwoFrame
       };
     }
     case "START_NEW_FRAME": {
@@ -170,20 +191,21 @@ const matchReducer = (state, action) => {
         frameWinner: null
       };
     }
-    case "MATCH_OVER": {
+    case "MATCH_WINNER": {
       const matchWinner = action.payload;
 
       return {
         ...state,
         matchWinner,
-        playerOneFrame:
-          state.frameWinner === state.playerOneName
-            ? state.playerOneFrame + 1
-            : state.playerOneFrame,
-        playerTwoFrame:
-          state.frameWinner === state.playerTwoName
-            ? state.playerTwoFrame + 1
-            : state.playerTwoFrame
+        isPlayerOneTurn: null
+      };
+    }
+
+    case "MATCH_DRAW": {
+      console.log("draw match");
+      return {
+        ...state,
+        isPlayerOneTurn: null
       };
     }
     default:

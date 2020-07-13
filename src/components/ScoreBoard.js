@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   },
   scoreBoard: {
     marginTop: 30,
-    marginBottom: 5,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",

@@ -29,7 +29,7 @@ const initialMatchInfo = {
   isFoul: false,
   isRedNext: true,
   redsRemaining: 6,
-  scoresRemaining: 147,
+  scoreRemaining: null,
   player_1Score: 0,
   player_2Score: 0,
   playerOneFrame: 0,
@@ -50,6 +50,7 @@ const BattleScreen = props => {
   } = route.params;
 
   const [matchInfo, dispatch] = useReducer(matchReducer, initialMatchInfo);
+  const [scoreRemaining, setScoreRemaining] = useState(147);
 
   useEffect(() => {
     dispatch({
@@ -95,30 +96,23 @@ const BattleScreen = props => {
         });
       }
       if (matchInfo.currentColor === "black") {
-        if (matchInfo.player_1Score === matchInfo.player_2Score) {
-          dispatch({ type: "DRAW" });
-        }
-        if (matchInfo.frame === frameNum) {
-          console.log("game_over");
-          dispatch({
-            type: "MATCH_OVER",
-            matchWinner:
-              matchInfo.playerOneFrame > matchInfo.playerTwoFrame
-                ? matchInfo.playerOneName
-                : matchInfo.playerTwoFrame > matchInfo.playerOneFrame
-                ? matchInfo.playerTwoName
-                : "draw"
-          });
-        } else {
-          const winner = determineWinner(
-            matchInfo.player_1Score,
-            matchInfo.player_2Score,
-            matchInfo.playerOneName,
-            matchInfo.playerTwoName
-          );
+        //last ball potted
+        const winner = determineWinner(
+          matchInfo.player_1Score,
+          matchInfo.player_2Score,
+          matchInfo.playerOneName,
+          matchInfo.playerTwoName
+        );
+        if (winner === null) return dispatch({ type: "DRAW" });
 
-          dispatch({ type: "FRAME_OVER", payload: winner });
-        }
+        //match not over
+        if (matchInfo.frame !== frameNum)
+          return dispatch({ type: "FRAME_OVER", payload: winner });
+
+        //match over
+        const matchWinner = determineMatchWinner(winner);
+        if (!matchWinner) return dispatch({ type: "MATCH_DRAW" });
+        return dispatch({ type: "MATCH_WINNER", payload: matchWinner });
       }
     } else {
       if (matchInfo.isPlayerOneTurn) {
@@ -159,12 +153,33 @@ const BattleScreen = props => {
       matchInfo.frameWinner === playerOneName
         ? "playerOneFrame"
         : "playerTwoFrame";
-    console.log(fieldToEdit);
     dispatch({ type: "START_NEW_FRAME", payload: fieldToEdit });
   };
 
   const compareBreak = (score, stat) => {
     return matchInfo.currentBreak + score > stat.highestBreak ? true : false;
+  };
+
+  const determineMatchWinner = winner => {
+    const { p1Frame, p2Frame } = getFinalFrameScore(winner);
+    if (p1Frame > p2Frame) return playerOneName;
+    if (p1Frame < p2Frame) return playerTwoName;
+    return null;
+  };
+
+  const getFinalFrameScore = winner => {
+    let p1Frame, p2Frame;
+    if (winner === playerOneName) {
+      p1Frame = matchInfo.playerOneFrame + 1;
+      p2Frame = matchInfo.playerTwoFrame;
+    } else {
+      p2Frame = matchInfo.playerTwoFrame + 1;
+      p1Frame = matchInfo.playerOneFrame;
+    }
+    return {
+      p1Frame,
+      p2Frame
+    };
   };
 
   return (
@@ -178,11 +193,13 @@ const BattleScreen = props => {
       <Text>{matchInfo.playerOneStat.attempt}</Text>
 
       <Text>{matchInfo.redsRemaining}</Text>
-      <Text>winner: {matchInfo.frameWinner}</Text>
+      <Text>winner: {matchInfo.matchWinner}</Text>
       <BigText text='hello' />
-      <TouchableOpacity onPress={startNewFrame}>
-        <Text>New Frame</Text>
-      </TouchableOpacity>
+      {matchInfo.frameWinner && !matchInfo.matchWinner && (
+        <TouchableOpacity onPress={startNewFrame}>
+          <Text>New Frame</Text>
+        </TouchableOpacity>
+      )}
       <View>
         <Text>{playerToBreakOff} break off</Text>
       </View>
@@ -232,7 +249,14 @@ const BattleScreen = props => {
         isPlayerOneTurn={matchInfo.isPlayerOneTurn}
         currentBreak={matchInfo.currentBreak}
       />
-      <ScoresRemaining redsRemaining={matchInfo.redsRemaining} />
+      {matchInfo.isPlayerOneTurn !== null && (
+        <ScoresRemaining
+          scoreRemaining={matchInfo.scoreRemaining}
+          p1Score={matchInfo.player_1Score}
+          p2Score={matchInfo.player_2Score}
+          isPlayerOneTurn={matchInfo.isPlayerOneTurn}
+        />
+      )}
       <Button
         title='End'
         onPress={() => navigation.navigate("Battle_Result")}
@@ -253,5 +277,5 @@ const styles = StyleSheet.create({
 });
 
 const determineWinner = (p1Score, p2Score, p1Name, p2Name) => {
-  return p1Score > p2Score ? p1Name : p2Name;
+  return p1Score > p2Score ? p1Name : p1Score < p2Score ? p2Name : null;
 };

@@ -14,7 +14,9 @@ const Break = props => {
           : { display: "none" }
       }
     >
-      <Text style={{ fontSize: 17 }}>Break: {currentBreak}</Text>
+      <Text style={{ fontSize: 17, color: "white" }}>
+        Break: {currentBreak}
+      </Text>
     </View>
   );
 };
@@ -23,9 +25,11 @@ export default Break;
 
 const styles = StyleSheet.create({
   p1Break: {
+    backgroundColor: "black",
     alignSelf: "flex-start"
   },
   p2Break: {
+    backgroundColor: "black",
     alignSelf: "flex-end"
   }
 });
