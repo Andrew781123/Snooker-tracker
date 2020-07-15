@@ -11,6 +11,10 @@ const DashBoardScreen = props => {
         title='New Battle'
         onPress={() => navigation.navigate("Battle", { screen: "New_Battle" })}
       />
+      <Button
+        title='Mangage Goals'
+        onPress={() => navigation.navigate("User_Profile", { screen: "Goals" })}
+      />
     </View>
   );
 };

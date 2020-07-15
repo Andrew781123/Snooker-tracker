@@ -3,7 +3,8 @@ import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileStack from "./ProfileStack";
 import DashBoardStack from "./DashBoardStack";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import GoalsStack from "./GoalsStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,6 +21,9 @@ const MainStack = () => {
           } else if (route.name === "User_Profile") {
             iconName = "user";
             color = focused ? "tomato" : "black";
+          } else if (route.name === "Goals") {
+            color = focused ? "tomato" : "black";
+            return <Ionicons name='ios-football' size={24} color={color} />;
           }
 
           // You can return any component that you like here!
@@ -33,6 +37,7 @@ const MainStack = () => {
       }}
     >
       <Tab.Screen name='DashBoard' component={DashBoardStack} />
+      <Tab.Screen name='Goals' component={GoalsStack} />
       <Tab.Screen name='User_Profile' component={ProfileStack} />
     </Tab.Navigator>
   );
