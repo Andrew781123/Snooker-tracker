@@ -4,14 +4,20 @@ import balls from "../resources/ballInfo";
 import Ball from "./Ball";
 
 const ColorBalls = props => {
-  const { handlePot, handleMiss, handleFoul, currentColor } = props;
+  const {
+    handlePot,
+    handleMiss,
+    handleFoul,
+    currentColor,
+    frameWinner
+  } = props;
 
   return (
     <View style={styles.balls}>
       <Ball
-        color='gray'
         text='foul'
         handleClick={handleFoul}
+        frameWinner={frameWinner}
         currentColor={currentColor}
       />
       {balls.map(ball => (
@@ -19,13 +25,20 @@ const ColorBalls = props => {
           key={ball.score}
           color={ball.color}
           score={ball.score}
+          frameWinner={frameWinner}
           handleClick={handlePot}
           currentColor={currentColor}
         />
       ))}
       <Ball
-        color='gray'
+        text='safety'
+        frameWinner={frameWinner}
+        handleClick={handleMiss}
+        currentColor={currentColor}
+      />
+      <Ball
         text='miss'
+        frameWinner={frameWinner}
         handleClick={handleMiss}
         currentColor={currentColor}
       />
@@ -38,6 +51,7 @@ export default ColorBalls;
 const styles = StyleSheet.create({
   balls: {
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between"
   }
 });

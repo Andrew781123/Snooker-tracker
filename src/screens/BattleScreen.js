@@ -11,15 +11,19 @@ import BigText from "../components/BigText";
 import Break from "../components/Break";
 
 const initialMatchInfo = {
-  playerOneStat: {
+  playerOne: {
     attempt: 0,
     ballsPotted: 0,
-    highestBreak: 0
+    highestBreak: 0,
+    score: 0,
+    frame: 0
   },
-  playerTwoStat: {
+  playerTwo: {
     attempt: 0,
     ballsPotted: 0,
-    highestBreak: 0
+    highestBreak: 0,
+    score: 0,
+    frame: 0
   },
   frame: 1,
   framesInfo: [],
@@ -30,10 +34,6 @@ const initialMatchInfo = {
   isRedNext: true,
   redsRemaining: 6,
   scoreRemaining: null,
-  player_1Score: 0,
-  player_2Score: 0,
-  playerOneFrame: 0,
-  playerTwoFrame: 0,
   currentColor: null,
   frameWinner: null,
   matchWinner: null
@@ -50,7 +50,6 @@ const BattleScreen = props => {
   } = route.params;
 
   const [matchInfo, dispatch] = useReducer(matchReducer, initialMatchInfo);
-  const [scoreRemaining, setScoreRemaining] = useState(147);
 
   useEffect(() => {
     dispatch({
@@ -63,13 +62,11 @@ const BattleScreen = props => {
     if (matchInfo.currentColor !== null) {
       const nextColorBall = balls[score - 1];
       if (matchInfo.isPlayerOneTurn) {
-        const isUpdateHighestBreak = compareBreak(
-          score,
-          matchInfo.playerOneStat
-        );
+        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerOne);
         dispatch({
-          type: "PLAYER_ONE_POT_COLOR",
+          type: "POT_COLOR",
           payload: {
+            player: "playerOne",
             score,
             isUpdateHighestBreak,
             nextColor:
@@ -79,13 +76,11 @@ const BattleScreen = props => {
           }
         });
       } else {
-        const isUpdateHighestBreak = compareBreak(
-          score,
-          matchInfo.playerTwoStat
-        );
+        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerTwo);
         dispatch({
-          type: "PLAYER_TWO_POT_COLOR",
+          type: "POT_COLOR",
           payload: {
+            player: "playerTwo",
             score,
             isUpdateHighestBreak,
             nextColor:
@@ -98,8 +93,8 @@ const BattleScreen = props => {
       if (matchInfo.currentColor === "black") {
         //last ball potted
         const winner = determineWinner(
-          matchInfo.player_1Score,
-          matchInfo.player_2Score,
+          matchInfo.playerOne.score,
+          matchInfo.playerTwo.score,
           matchInfo.playerOneName,
           matchInfo.playerTwoName
         );
@@ -116,23 +111,17 @@ const BattleScreen = props => {
       }
     } else {
       if (matchInfo.isPlayerOneTurn) {
-        const isUpdateHighestBreak = compareBreak(
-          score,
-          matchInfo.playerOneStat
-        );
+        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerOne);
 
         dispatch({
-          type: "PLAYER_ONE_POT",
-          payload: { score, isUpdateHighestBreak }
+          type: "POT",
+          payload: { score, isUpdateHighestBreak, player: "playerOne" }
         });
       } else {
-        const isUpdateHighestBreak = compareBreak(
-          score,
-          matchInfo.playerTwoStat
-        );
+        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerTwo);
         dispatch({
-          type: "PLAYER_TWO_POT",
-          payload: { score, isUpdateHighestBreak }
+          type: "POT",
+          payload: { score, isUpdateHighestBreak, player: "playerTwo" }
         });
       }
     }
@@ -140,9 +129,9 @@ const BattleScreen = props => {
 
   const handleMiss = () => {
     if (matchInfo.isPlayerOneTurn) {
-      dispatch({ type: "PLAYER_ONE_MISS" });
+      dispatch({ type: "MISS", payload: "playerOne" });
     } else {
-      dispatch({ type: "PLAYER_TWO_MISS" });
+      dispatch({ type: "MISS", payload: "playerTwo" });
     }
   };
 
@@ -154,10 +143,9 @@ const BattleScreen = props => {
 
   const startNewFrame = () => {
     const fieldToEdit =
-      matchInfo.frameWinner === playerOneName
-        ? "playerOneFrame"
-        : "playerTwoFrame";
-    dispatch({ type: "START_NEW_FRAME", payload: fieldToEdit });
+      matchInfo.frameWinner === playerOneName ? "playerOne" : "playerTwo";
+    dispatch({ type: "INCREMENT_FRAME", payload: fieldToEdit });
+    dispatch({ type: "START_NEW_FRAME" });
   };
 
   const compareBreak = (score, stat) => {
@@ -174,11 +162,11 @@ const BattleScreen = props => {
   const getFinalFrameScore = winner => {
     let p1Frame, p2Frame;
     if (winner === playerOneName) {
-      p1Frame = matchInfo.playerOneFrame + 1;
-      p2Frame = matchInfo.playerTwoFrame;
+      p1Frame = matchInfo.playerOne.frame + 1;
+      p2Frame = matchInfo.playerTwo.frame;
     } else {
-      p2Frame = matchInfo.playerTwoFrame + 1;
-      p1Frame = matchInfo.playerOneFrame;
+      p2Frame = matchInfo.playerTwo.frame + 1;
+      p1Frame = matchInfo.playerOne;
     }
     return {
       p1Frame,
@@ -188,13 +176,9 @@ const BattleScreen = props => {
 
   return (
     <View>
-      <Text>
-        player one highest break: {matchInfo.playerOneStat.highestBreak}
-      </Text>
-      <Text>
-        player two highest break: {matchInfo.playerTwoStat.highestBreak}
-      </Text>
-      <Text>{matchInfo.playerOneStat.attempt}</Text>
+      <Text>player one highest break: {matchInfo.playerOne.highestBreak}</Text>
+      <Text>player two highest break: {matchInfo.playerTwo.highestBreak}</Text>
+      <Text>{matchInfo.playerOne.attempt}</Text>
 
       <Text>{matchInfo.redsRemaining}</Text>
       <Text>winner: {matchInfo.matchWinner}</Text>
@@ -211,21 +195,26 @@ const BattleScreen = props => {
         {matchInfo.isRedNext ? (
           <>
             <Ball
-              color='gray'
               text='foul'
+              frameWinner={matchInfo.frameWinner}
               handleClick={handleFoul}
               currentColor={matchInfo.currentColor}
             />
             <Ball
               color='red'
               score={1}
+              frameWinner={matchInfo.frameWinner}
               handleClick={handlePot}
               currentColor={matchInfo.currentColor}
             />
-            <Ball color='gray' text='safety' handleClick={handleSafety} />
             <Ball
-              color='gray'
+              text='safety'
+              frameWinner={matchInfo.frameWinner}
+              handleClick={handleSafety}
+            />
+            <Ball
               text='miss'
+              frameWinner={matchInfo.frameWinner}
               handleClick={handleMiss}
               currentColor={matchInfo.currentColor}
             />
@@ -235,16 +224,17 @@ const BattleScreen = props => {
             handlePot={handlePot}
             handleFoul={handleFoul}
             handleMiss={handleMiss}
+            frameWinner={matchInfo.frameWinner}
             currentColor={matchInfo.currentColor}
           />
         )}
       </View>
 
       <ScoreBoard
-        player_1Score={matchInfo.player_1Score}
-        player_2Score={matchInfo.player_2Score}
-        playerOneFrame={matchInfo.playerOneFrame}
-        playerTwoFrame={matchInfo.playerTwoFrame}
+        p1Score={matchInfo.playerOne.score}
+        p2Score={matchInfo.playerTwo.score}
+        p1Frame={matchInfo.playerOne.frame}
+        p2Frame={matchInfo.playerTwo.frame}
         playerOneName={playerOneName}
         playerTwoName={playerTwoName}
         frameNum={frameNum}
@@ -257,8 +247,8 @@ const BattleScreen = props => {
       {matchInfo.isPlayerOneTurn !== null && (
         <ScoresRemaining
           scoreRemaining={matchInfo.scoreRemaining}
-          p1Score={matchInfo.player_1Score}
-          p2Score={matchInfo.player_2Score}
+          p1Score={matchInfo.playerOne.score}
+          p2Score={matchInfo.playerTwo.score}
           isPlayerOneTurn={matchInfo.isPlayerOneTurn}
         />
       )}

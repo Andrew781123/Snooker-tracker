@@ -3,10 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 
 const ScoreBoard = props => {
   const {
-    player_1Score,
-    player_2Score,
-    playerOneFrame,
-    playerTwoFrame,
+    p1Score,
+    p2Score,
+    p1Frame,
+    p2Frame,
     playerOneName,
     playerTwoName,
     frameNum,
@@ -25,13 +25,13 @@ const ScoreBoard = props => {
         {playerOneName}
       </Text>
       <View style={styles.scores}>
-        <Text style={{ fontSize: 20 }}>{player_1Score}</Text>
+        <Text style={{ fontSize: 20 }}>{p1Score}</Text>
         <View style={styles.frameNum}>
-          <Text style={{ fontSize: 20 }}>{playerOneFrame}</Text>
+          <Text style={{ fontSize: 20 }}>{p1Frame}</Text>
           <Text style={{ fontSize: 20 }}>({frameNum})</Text>
-          <Text style={{ fontSize: 20 }}>{playerTwoFrame}</Text>
+          <Text style={{ fontSize: 20 }}>{p2Frame}</Text>
         </View>
-        <Text style={{ fontSize: 20 }}>{player_2Score}</Text>
+        <Text style={{ fontSize: 20 }}>{p2Score}</Text>
       </View>
       <Text
         style={{

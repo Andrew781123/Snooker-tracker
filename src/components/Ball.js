@@ -1,14 +1,34 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Ball = props => {
-  const { color, score, handleClick, currentColor } = props;
+  const {
+    color = "gray",
+    score,
+    handleClick,
+    currentColor,
+    frameWinner
+  } = props;
 
-  const disable =
-    currentColor === null || currentColor === color || props.text
-      ? false
-      : true;
+  const [disable, setDisable] = useState(false);
+
+  useEffect(() => {
+    let isDisable = false;
+    if (frameWinner) {
+      isDisable = true;
+    } else if (!currentColor) {
+      isDisable = false;
+    } else if (currentColor) {
+      if (currentColor === color || color === "gray") {
+        isDisable = false;
+      } else {
+        isDisable = true;
+      }
+    }
+
+    setDisable(isDisable);
+  }, [frameWinner, currentColor, props.text]);
 
   return (
     <TouchableOpacity

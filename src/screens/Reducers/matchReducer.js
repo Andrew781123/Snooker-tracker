@@ -12,14 +12,6 @@ const updateMatchInfo = (state, score) => {
     scoreRemaining:
       score === 1 ? state.scoreRemaining - 8 : state.scoreRemaining,
 
-    player_1Score: state.isPlayerOneTurn
-      ? (state.player_1Score += score)
-      : state.player_1Score,
-
-    player_2Score: !state.isPlayerOneTurn
-      ? (state.player_2Score += score)
-      : state.player_2Score,
-
     currentColor: state.redsRemaining === 0 ? "yellow" : null
   };
 };
@@ -49,93 +41,52 @@ const matchReducer = (state, action) => {
         playerTwoName: action.payload.playerTwoName
       };
     }
-    case "PLAYER_ONE_POT": {
-      const { score, isUpdateHighestBreak } = action.payload;
+
+    case "POT": {
+      const { score, isUpdateHighestBreak, player } = action.payload;
       return {
         ...updateMatchInfo(state, score),
-        playerOneStat: {
-          ...state.playerOneStat,
-          attempt: state.playerOneStat.attempt + 1,
-          ballsPotted: state.playerOneStat.ballsPotted + 1,
+        [player]: {
+          ...state[player],
+          score: state[player].score + score,
+          attempt: state[player].attempt + 1,
+          ballsPotted: state[player].ballsPotted + 1,
           highestBreak: isUpdateHighestBreak
             ? state.currentBreak + score
-            : state.playerOneStat.highestBreak
-        }
-      };
-    }
-    case "PLAYER_TWO_POT": {
-      const { score, isUpdateHighestBreak } = action.payload;
-      return {
-        ...updateMatchInfo(state, score),
-
-        playerTwoStat: {
-          ...state.playerTwoStat,
-          attempt: state.playerTwoStat.attempt + 1,
-          ballsPotted: state.playerTwoStat.ballsPotted + 1,
-          highestBreak: isUpdateHighestBreak
-            ? state.currentBreak + score
-            : state.playerTwoStat.highestBreak
+            : state[player].highestBreak
         }
       };
     }
 
-    case "PLAYER_ONE_MISS": {
+    case "MISS": {
+      const player = action.payload;
       return {
         ...updateMatchInfoOnMiss(state),
-        playerOneStat: {
-          ...state.playerOneStat,
-          attempt: state.playerOneStat.attempt + 1
-        }
-      };
-    }
-    case "PLAYER_TWO_MISS": {
-      return {
-        ...updateMatchInfoOnMiss(state),
-        playerTwoStat: {
-          ...state.playerTwoStat,
-          attempt: state.playerTwoStat.attempt + 1
+        [player]: {
+          ...state[player],
+          attempt: state[player].attempt + 1
         }
       };
     }
 
-    case "PLAYER_ONE_POT_COLOR": {
-      const { score, isUpdateHighestBreak, nextColor } = action.payload;
+    case "POT_COLOR": {
+      const { player, score, isUpdateHighestBreak, nextColor } = action.payload;
       return {
         ...state,
         scoreRemaining: state.scoreRemaining - score,
-        playerOneStat: {
-          ...state.playerOneStat,
-          attempt: state.playerOneStat.attempt + 1,
-          ballsPotted: state.playerOneStat.ballsPotted + 1,
+        [player]: {
+          ...state[player],
+          score: state[player].score + score,
+          attempt: state[player].attempt + 1,
+          ballsPotted: state[player].ballsPotted + 1,
           highestBreak: isUpdateHighestBreak
             ? state.currentBreak + score
-            : state.playerOneStat.highestBreak
+            : state[player].highestBreak
         },
 
         currentBreak: state.currentBreak + score,
 
-        currentColor: nextColor,
-        player_1Score: (state.player_1Score += score)
-      };
-    }
-    case "PLAYER_TWO_POT_COLOR": {
-      const { score, isUpdateHighestBreak, nextColor } = action.payload;
-      return {
-        ...state,
-        scoreRemaining: state.scoreRemaining - score,
-        playerTwoStat: {
-          ...state.playerTwoStat,
-          attempt: state.playerTwoStat.attempt + 1,
-          ballsPotted: state.playerTwoStat.ballsPotted + 1,
-          highestBreak: isUpdateHighestBreak
-            ? state.currentBreak + score
-            : state.playerTwoStat.highestBreak
-        },
-
-        currentBreak: state.currentBreak + score,
-
-        currentColor: nextColor,
-        player_2Score: (state.player_2Score += score)
+        currentColor: nextColor
       };
     }
 
@@ -154,31 +105,30 @@ const matchReducer = (state, action) => {
         frameWinner: winner
       };
     }
+
     case "INCREMENT_FRAME": {
+      const player = action.payload;
       return {
         ...state,
-        playerOneFrame:
-          state.frameWinner === state.playerOneName
-            ? state.playerOneFrame + 1
-            : state.playerOneFrame,
-        playerTwoFrame:
-          state.frameWinner === state.playerTwoName
-            ? state.playerTwoFrame + 1
-            : state.playerTwoFrame
+        [player]: {
+          ...state[player],
+          frame: state[player].frame + 1
+        }
       };
     }
+
     case "START_NEW_FRAME": {
-      const fieldToEdit = action.payload;
-      console.log(fieldToEdit);
       return {
         ...state,
         frame: state.frame + 1,
-        // framesInfo: [
-        //   ...state.framesInfo,
-        //   {
-        //     score: `${state.player_1Score} - ${state.player_2Score}`
-        //   }
-        // ],
+        playerOne: {
+          ...state.playerOne,
+          score: 0
+        },
+        playerTwo: {
+          ...state.playerTwo,
+          score: 0
+        },
         currentBreak: 0,
         playerToBreakOff:
           state.playerToBreakOff === state.playerOneName
@@ -189,10 +139,7 @@ const matchReducer = (state, action) => {
         isFoul: false,
         isRedNext: true,
         redsRemaining: 6,
-        scoresRemaining: 147,
-        player_1Score: 0,
-        player_2Score: 0,
-        [fieldToEdit]: state[fieldToEdit] + 1,
+        scoreRemaining: 147,
         currentColor: null,
         frameWinner: null
       };
