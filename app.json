@@ -14,9 +14,7 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
+
     "android": {
       "package": "com.yourcompany.yourappname",
       "versionCode": 1

@@ -148,6 +148,10 @@ const BattleScreen = props => {
 
   const handleFoul = () => {};
 
+  const handleSafety = () => {
+    dispatch({ type: "SAFETY" });
+  };
+
   const startNewFrame = () => {
     const fieldToEdit =
       matchInfo.frameWinner === playerOneName
@@ -218,6 +222,7 @@ const BattleScreen = props => {
               handleClick={handlePot}
               currentColor={matchInfo.currentColor}
             />
+            <Ball color='gray' text='safety' handleClick={handleSafety} />
             <Ball
               color='gray'
               text='miss'

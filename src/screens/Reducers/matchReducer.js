@@ -139,8 +139,14 @@ const matchReducer = (state, action) => {
       };
     }
 
+    case "SAFETY": {
+      return {
+        ...state,
+        isPlayerOneTurn: !state.isPlayerOneTurn
+      };
+    }
+
     case "FRAME_OVER": {
-      console.log("frameOver");
       const winner = action.payload;
       return {
         ...state,
