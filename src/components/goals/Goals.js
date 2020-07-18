@@ -4,38 +4,39 @@ import GoalItem from "./GoalItem";
 import GoalsContext from "../../context/goals/GoalsContext";
 import { FlatList } from "react-native-gesture-handler";
 
-const renderCompleted = ({ item, idx = 0 }) => {
-  if (item.isCompleted) {
-    idx++;
-    return (
-      <GoalItem
-        content={item.content}
-        isCompleted={item.isCompleted}
-        index={idx}
-      />
-    );
-  }
-};
-
-const renderNotCompleted = ({ item, idx = 0 }) => {
-  if (!item.isCompleted) {
-    idx++;
-    return (
-      <GoalItem
-        content={item.content}
-        isCompleted={item.isCompleted}
-        index={idx}
-      />
-    );
-  }
-};
-
 const Goals = props => {
   const { title, showCompleted } = props;
 
-  const { goalsState } = useContext(GoalsContext);
+  const { goalsState, deleteGoal } = useContext(GoalsContext);
   const { goals } = goalsState;
 
+  const renderCompleted = ({ item, index }) => {
+    if (item.isCompleted) {
+      return (
+        <GoalItem
+          id={item.id}
+          content={item.content}
+          isCompleted={item.isCompleted}
+          index={index}
+          deleteGoal={deleteGoal}
+        />
+      );
+    }
+  };
+
+  const renderNotCompleted = ({ item, index }) => {
+    if (!item.isCompleted) {
+      return (
+        <GoalItem
+          id={item.id}
+          content={item.content}
+          isCompleted={item.isCompleted}
+          index={index}
+          deleteGoal={deleteGoal}
+        />
+      );
+    }
+  };
   return (
     <View style={styles.goalsContainer}>
       <Text style={styles.goalTitle}>{title}</Text>

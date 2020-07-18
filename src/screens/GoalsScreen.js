@@ -1,14 +1,32 @@
-import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  TouchableOpacity
+} from "react-native";
 import Goals from "../components/goals/Goals";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 
 const GoalsScreen = ({ navigation }) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", () =>
+      console.log("blur")
+    );
+
+    return unsubscribe;
+  });
+
   return (
-    <View>
+    <View style={styles.goalScreenContainer}>
       <Goals title='My Goals' showCompleted={false} />
       <View style={styles.newGoal}>
-        <TextInput placeholder='Add new goal' style={styles.input} />
+        <TextInput
+          placeholder='Add new goal'
+          placeholderTextColor='white'
+          style={styles.input}
+        />
         <TouchableOpacity style={styles.addButton}>
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
@@ -24,20 +42,25 @@ const GoalsScreen = ({ navigation }) => {
 export default GoalsScreen;
 
 const styles = StyleSheet.create({
+  goalScreenContainer: {
+    flex: 1,
+    backgroundColor: "#c2f2ff"
+  },
   input: {
+    color: "black",
     padding: 5,
     backgroundColor: "orange",
-    flex: 1
+    width: "80%"
   },
   newGoal: {
     flexDirection: "row",
-    width: "100%",
     backgroundColor: "black"
   },
   addButton: {
     backgroundColor: "red",
-    flex: 1,
-    flexDirection: "row"
+    justifyContent: "center",
+    alignItems: "center",
+    width: "20%"
   },
   addButtonText: {
     color: "white"

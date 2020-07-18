@@ -25,8 +25,12 @@ const initialState = {
 const GoalsProvider = ({ children }) => {
   const [goalsState, dispatch] = useReducer(goalsReducer, initialState);
 
+  const deleteGoal = id => {
+    dispatch({ type: "DELETE_GOAL", id });
+  };
+
   return (
-    <GoalsContext.Provider value={{ goalsState }}>
+    <GoalsContext.Provider value={{ goalsState, deleteGoal }}>
       {children}
     </GoalsContext.Provider>
   );

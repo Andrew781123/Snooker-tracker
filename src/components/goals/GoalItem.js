@@ -7,7 +7,12 @@ import {
 } from "@expo/vector-icons";
 
 const GoalItem = props => {
-  const { content, isCompleted, index } = props;
+  const { content, isCompleted, index, id, deleteGoal } = props;
+
+  const handleDelete = () => {
+    console.log(id);
+    deleteGoal(id);
+  };
 
   return (
     <View style={styles.goalItemContainer}>
@@ -27,7 +32,12 @@ const GoalItem = props => {
               color='black'
               style={{ marginRight: 5 }}
             />
-            <FontAwesome name='trash-o' size={24} color='black' />
+            <FontAwesome
+              name='trash-o'
+              size={24}
+              color='black'
+              onPress={handleDelete}
+            />
           </View>
         </>
       )}
