@@ -1,25 +1,20 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import GoalItem from "./GoalItem";
+import IncompleteGoalItem from "./IncompleteGoalItem";
 import GoalsContext from "../../context/goals/GoalsContext";
 import { FlatList } from "react-native-gesture-handler";
+import CompletedGoalItem from "./CompletedGoalItem";
 
 const Goals = props => {
   const { title, showCompleted } = props;
 
-  const { goalsState, deleteGoal } = useContext(GoalsContext);
+  const { goalsState, toggleGoal } = useContext(GoalsContext);
   const { goals } = goalsState;
 
   const renderCompleted = ({ item, index }) => {
     if (item.isCompleted) {
       return (
-        <GoalItem
-          id={item.id}
-          content={item.content}
-          isCompleted={item.isCompleted}
-          index={index}
-          deleteGoal={deleteGoal}
-        />
+        <CompletedGoalItem goal={item} index={index} toggleGoal={toggleGoal} />
       );
     }
   };
@@ -27,13 +22,7 @@ const Goals = props => {
   const renderNotCompleted = ({ item, index }) => {
     if (!item.isCompleted) {
       return (
-        <GoalItem
-          id={item.id}
-          content={item.content}
-          isCompleted={item.isCompleted}
-          index={index}
-          deleteGoal={deleteGoal}
-        />
+        <IncompleteGoalItem goal={item} index={index} toggleGoal={toggleGoal} />
       );
     }
   };

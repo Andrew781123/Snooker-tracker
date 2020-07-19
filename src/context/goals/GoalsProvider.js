@@ -6,17 +6,17 @@ const initialState = {
   goals: [
     {
       id: "1",
-      content: "make a break over 56",
+      content: "first goal",
       isCompleted: false
     },
     {
       id: "2",
-      content: "make a break over 30",
+      content: "second goal",
       isCompleted: false
     },
     {
       id: "3",
-      content: "make a break over 30",
+      content: "third goal",
       isCompleted: true
     }
   ]
@@ -25,12 +25,16 @@ const initialState = {
 const GoalsProvider = ({ children }) => {
   const [goalsState, dispatch] = useReducer(goalsReducer, initialState);
 
-  const deleteGoal = id => {
-    dispatch({ type: "DELETE_GOAL", id });
+  const completeGoal = id => {
+    dispatch({ type: "COMPLETE_GOAL", id });
+  };
+
+  const toggleGoal = id => {
+    dispatch({ type: "TOGGLE_GOAL", id });
   };
 
   return (
-    <GoalsContext.Provider value={{ goalsState, deleteGoal }}>
+    <GoalsContext.Provider value={{ goalsState, completeGoal, toggleGoal }}>
       {children}
     </GoalsContext.Provider>
   );

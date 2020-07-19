@@ -1,17 +1,40 @@
 import React, { useReducer } from "react";
 import authContext from "./authContext";
 import authReducer from "./authReducer";
+import api from "../../api/tracker";
 
 const initialState = {
-  isLoggedIn: false,
-  loading: null
+  token: null,
+  loading: null,
+  error: null
 };
 
 const authProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, initialState);
 
-  const login = () => {
-    dispatch({ type: "SIGN_IN" });
+  const register = async ({ username, password }) => {
+    try {
+      const res = await api.post("/auth/register", { username, password });
+
+      dispatch({ type: "REGISTER", token: res.data.token });
+    } catch (err) {
+      console.log(err.response.data);
+      dispatch({
+        type: "REGISTER_FAIL",
+        errMsg: "Something wrong with register"
+      });
+    }
+  };
+
+  const login = async ({ username, password }) => {
+    try {
+      const res = await api.post("/auth/login", { username, password });
+
+      dispatch({ type: "LOGIN", token: res.data.token });
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: "LOGIN_FAIL", errMsg: "Something wrong :(" });
+    }
   };
 
   const logout = () => {
@@ -19,7 +42,7 @@ const authProvider = ({ children }) => {
   };
 
   return (
-    <authContext.Provider value={{ authState, login, logout }}>
+    <authContext.Provider value={{ authState, login, logout, register }}>
       {children}
     </authContext.Provider>
   );

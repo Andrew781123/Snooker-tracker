@@ -1,13 +1,17 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ProfileStack from "./ProfileStack";
+import MyProfileStack from "./MyProfileStack";
 import DashBoardStack from "./DashBoardStack";
 import BattleStack from "./BattleStack";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import GoalsStack from "./GoalsStack";
+import { createStackNavigator } from "@react-navigation/stack";
+import UserProfileScreen from "../screens/UserProfileScreen";
+import SearchStack from "./SearchStack";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const MainStack = () => {
   return (
@@ -22,6 +26,9 @@ const MainStack = () => {
           } else if (route.name === "User_Profile") {
             iconName = "user";
             color = focused ? "tomato" : "black";
+          } else if (route.name === "Search") {
+            color = focused ? "tomato" : "black";
+            return <AntDesign name='search1' size={24} color={color} />;
           } else if (route.name === "Goals") {
             color = focused ? "tomato" : "black";
             return (
@@ -49,9 +56,10 @@ const MainStack = () => {
       }}
     >
       <Tab.Screen name='DashBoard' component={DashBoardStack} />
+      <Tab.Screen name='Search' component={SearchStack} />
       <Tab.Screen name='Match' component={BattleStack} />
       <Tab.Screen name='Goals' component={GoalsStack} />
-      <Tab.Screen name='User_Profile' component={ProfileStack} />
+      <Tab.Screen name='User_Profile' component={MyProfileStack} />
     </Tab.Navigator>
   );
 };

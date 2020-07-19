@@ -1,15 +1,33 @@
 const authReducer = (state, action) => {
   switch (action.type) {
-    case "SIGN_IN": {
+    case "REGISTER": {
       return {
         ...state,
-        isLoggedIn: true
+        token: action.token
+      };
+    }
+    case "REGISTER_FAIL": {
+      return {
+        ...state,
+        error: action.errMsg
+      };
+    }
+    case "LOGIN": {
+      return {
+        ...state,
+        token: action.token
+      };
+    }
+    case "LOGIN_FAIL": {
+      return {
+        ...state,
+        error: action.errMsg
       };
     }
     case "LOG_OUT": {
       return {
         ...state,
-        isLoggedIn: false
+        token: null
       };
     }
     default:
