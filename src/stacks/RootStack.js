@@ -5,12 +5,17 @@ import MainStack from "./MainStack";
 import authContext from "../context/auth/authContext";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import InitialLoadingScreen from "../screens/InitialLoadingScreen";
 
 const Stack = createStackNavigator();
 
 const RootStack = () => {
   const { authState } = useContext(authContext);
-  const { token } = authState;
+  const { token, loadingToken } = authState;
+
+  if (loadingToken) {
+    return <InitialLoadingScreen />;
+  }
 
   return token ? (
     <Stack.Navigator headerMode='none'>

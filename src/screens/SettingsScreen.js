@@ -1,11 +1,16 @@
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import usePopToTop from "../custome-hooks/usePopToTop";
+import useBlur from "../custome-hooks/useBlur";
+import { StackActions } from "@react-navigation/native";
 
 const SettingsScreen = props => {
   const { navigation } = props;
 
-  usePopToTop(navigation);
+  const callBack = () => {
+    navigation.dispatch(StackActions.popToTop());
+  };
+
+  useBlur(callBack, navigation);
 
   return (
     <View>

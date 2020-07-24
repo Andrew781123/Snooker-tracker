@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import authContext from "../context/auth/authContext";
 import { Input, Text, Button } from "react-native-elements";
 import ErrorMessage from "../shared/ErrorMessage";
+import useBlur from "../custome-hooks/useBlur";
 
 const LoginScreen = props => {
   const { navigation } = props;
@@ -10,11 +11,22 @@ const LoginScreen = props => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login, authState } = useContext(authContext);
-  const { error } = authState;
+  const { login, authState, devLogin, clearErrors, tryLogin } = useContext(
+    authContext
+  );
+  const { error, authLoading } = authState;
+
+  useBlur(clearErrors, navigation);
+  useEffect(() => {
+    tryLogin();
+  }, []);
 
   const handleLogin = () => {
     login({ username, password });
+  };
+
+  const handleDevLogin = () => {
+    devLogin();
   };
 
   return (
@@ -33,18 +45,19 @@ const LoginScreen = props => {
       />
       <Input
         placeholder='Enter password'
-        label='Create new password'
+        label='Password'
         value={password}
         onChangeText={text => setPassword(text)}
         autoCapitalize='none'
         autoCorrect={false}
         secureTextEntry
       />
-      <Button title='Login' onPress={handleLogin} />
+      <Button title='Login' onPress={handleLogin} loading={authLoading} />
       <Button
         title='Register'
         onPress={() => navigation.navigate("Register")}
       />
+      <Button title='Dev Login' onPress={handleDevLogin} />
     </View>
   );
 };

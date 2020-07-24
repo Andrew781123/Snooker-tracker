@@ -3,14 +3,19 @@ import { StyleSheet, View } from "react-native";
 import { Input, Button, Text, Icon } from "react-native-elements";
 import authContext from "../context/auth/authContext";
 import ErrorMessage from "../shared/ErrorMessage";
+import useBlur from "../custome-hooks/useBlur";
 
-const RegisterScreen = () => {
+const RegisterScreen = props => {
+  const { navigation } = props;
+
   const [username, setUsername] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
 
-  const { register, authState } = useContext(authContext);
-  const { error } = authState;
+  const { register, authState, clearErrors } = useContext(authContext);
+  const { error, authLoading } = authState;
+
+  useBlur(clearErrors, navigation);
 
   const handleRegister = () => {
     register({ username, password: password1 });
@@ -32,7 +37,7 @@ const RegisterScreen = () => {
       <Input
         secureTextEntry
         placeholder='Enter password'
-        label='Create new password'
+        label='Password'
         value={password1}
         autoCapitalize='none'
         autoCorrect={false}
@@ -47,7 +52,7 @@ const RegisterScreen = () => {
         autoCorrect={false}
         onChangeText={text => setPassword2(text)}
       />
-      <Button title='Register' onPress={handleRegister} />
+      <Button title='Register' onPress={handleRegister} loading={authLoading} />
     </View>
   );
 };

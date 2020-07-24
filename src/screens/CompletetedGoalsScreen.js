@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Goals from "../components/goals/Goals";
-import usePopToTop from "../custome-hooks/usePopToTop";
+import useBlur from "../custome-hooks/useBlur";
+import { StackActions } from "@react-navigation/native";
 
 const CompletetedGoalsScreen = props => {
   const { navigation } = props;
 
-  usePopToTop(navigation);
+  useBlur(() => navigation.dispatch(StackActions.popToTop()), navigation);
 
   return (
     <View>
