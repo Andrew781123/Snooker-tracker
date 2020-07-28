@@ -3,33 +3,37 @@ const bcrypt = require("bcrypt");
 
 const userStatSchema = new mongoose.Schema(
   {
-    match_won: {
-      type: Number,
-      default: 0
+    cumulative: {
+      match_won: {
+        type: Number,
+        default: 0
+      },
+      match_played: {
+        type: Number,
+        default: 0
+      },
+      frames_played: {
+        type: Number,
+        default: 0
+      },
+      centuries_num: {
+        type: Number,
+        default: 0
+      },
+      balls_potted: {
+        type: Number,
+        default: 0
+      },
+      attempts: {
+        type: Number,
+        default: 0
+      }
     },
-    match_played: {
-      type: Number,
-      default: 0
-    },
-    frames_played: {
-      type: Number,
-      default: 0
-    },
-    centuries_num: {
-      type: Number,
-      default: 0
-    },
-    highest_break: {
-      type: Number,
-      default: 0
-    },
-    balls_potted: {
-      type: Number,
-      default: 0
-    },
-    attempts: {
-      type: Number,
-      default: 0
+    best_record: {
+      highest_break: {
+        type: Number,
+        default: 0
+      }
     }
   },
   { toJSON: { virtual: true } }
@@ -53,7 +57,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  stat: userStatSchema
+  stats: userStatSchema,
+  last_ten_stats: [userStatSchema],
+  goals: [{ type: mongoose.Schema.Types.ObjectId, ref: "goal" }]
 });
 
 userSchema.pre("save", function (next) {
