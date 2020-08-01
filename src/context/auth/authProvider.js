@@ -20,7 +20,6 @@ const authProvider = ({ children }) => {
     try {
       const res = await api.get("/users/current");
 
-      console.log(res.data.user);
       dispatch({ type: "GET_CURRENT_USER", user: res.data.user });
     } catch (err) {
       console.log(err);

@@ -44,10 +44,17 @@ const GoalsProvider = ({ children }) => {
     dispatch({ type: "COMPLETE_GOAL", id });
   };
 
-  const toggleGoal = async id => {
-    dispatch({ type: "TOGGLE_GOAL", id });
+  const toggleGoal = async (userId, goalId, isCompleted) => {
+    dispatch({ type: "TOGGLE_GOAL", goalId: goalId.toString() });
     try {
-      axios.patch("/users/1/goals");
+      const res = await api.patch(
+        `/users/${userId.toString()}/goals/${goalId.toString()}`,
+        {
+          isCompleted: !isCompleted
+        }
+      );
+
+      console.log(res.data.updatedGoal);
     } catch (err) {}
   };
 

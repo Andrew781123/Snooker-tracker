@@ -7,8 +7,8 @@ import {
 } from "@expo/vector-icons";
 
 const IncompleteGoalItem = props => {
-  const { goal, completeGoal, index, toggleGoal } = props;
-  const { id, content } = goal;
+  const { goal, completeGoal, index, toggleGoal, userId } = props;
+  const { _id, content } = goal;
 
   return (
     <View style={styles.goalItemContainer}>
@@ -21,7 +21,7 @@ const IncompleteGoalItem = props => {
             name={"checkbox-blank-outline"}
             size={24}
             color='black'
-            onPress={() => toggleGoal(id)}
+            onPress={() => toggleGoal(userId, _id, goal.isCompleted)}
             style={{ marginRight: 5 }}
           />
         </TouchableOpacity>

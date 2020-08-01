@@ -60,7 +60,7 @@ const goalsReducer = (state, action) => {
       return {
         ...state,
         goals: state.goals.map(goal => {
-          if (goal.id === action.id) {
+          if (goal._id.toString() === action.goalId) {
             return {
               ...goal,
               isCompleted: !goal.isCompleted

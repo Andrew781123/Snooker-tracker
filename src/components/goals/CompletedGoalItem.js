@@ -3,15 +3,17 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const CompletedGoalItem = props => {
-  const { goal, index, toggleGoal } = props;
-  const { id, content } = goal;
+  const { goal, index, toggleGoal, userId } = props;
+  const { _id, content } = goal;
 
   return (
     <View style={styles.goalItemContainer}>
       <Text style={styles.number}>#{index}</Text>
       <Text style={styles.goalItemContent}>{content}</Text>
       <View style={styles.optionButtons}>
-        <TouchableOpacity onPress={() => toggleGoal(id)}>
+        <TouchableOpacity
+          onPress={() => toggleGoal(userId, _id, goal.isCompleted)}
+        >
           <MaterialCommunityIcons name='reload' size={24} color='black' />
         </TouchableOpacity>
       </View>

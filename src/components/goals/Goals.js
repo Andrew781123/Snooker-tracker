@@ -10,17 +10,27 @@ import IncompleteGoalItem from "./IncompleteGoalItem";
 import GoalsContext from "../../context/goals/GoalsContext";
 import { FlatList } from "react-native-gesture-handler";
 import CompletedGoalItem from "./CompletedGoalItem";
+import ErrorMessage from "../../shared/ErrorMessage";
+import authContext from "../../context/auth/authContext";
 
 const Goals = props => {
   const { title, showCompleted } = props;
 
   const { goalsState, toggleGoal } = useContext(GoalsContext);
-  const { goals, loadingGoals } = goalsState;
+  const { goals, loadingGoals, goalsError } = goalsState;
+
+  const { authState } = useContext(authContext);
+  const { user } = authState;
 
   const renderCompleted = ({ item, index }) => {
     if (item.isCompleted) {
       return (
-        <CompletedGoalItem goal={item} index={index} toggleGoal={toggleGoal} />
+        <CompletedGoalItem
+          goal={item}
+          index={index}
+          toggleGoal={toggleGoal}
+          userId={user._id}
+        />
       );
     }
   };
@@ -28,33 +38,41 @@ const Goals = props => {
   const renderNotCompleted = ({ item, index }) => {
     if (!item.isCompleted) {
       return (
-        <IncompleteGoalItem goal={item} index={index} toggleGoal={toggleGoal} />
+        <IncompleteGoalItem
+          goal={item}
+          index={index}
+          toggleGoal={toggleGoal}
+          userId={user._id}
+        />
       );
     }
   };
 
   return (
-    <View style={styles.goalsContainer}>
-      <Text style={styles.goalTitle}>{title}</Text>
-      {loadingGoals ? (
-        <ActivityIndicator size='large' />
-      ) : !showCompleted ? (
-        <>
+    <>
+      {goalsError && <ErrorMessage errorMessage={goalsError} />}
+      <View style={styles.goalsContainer}>
+        <Text style={styles.goalTitle}>{title}</Text>
+        {loadingGoals ? (
+          <ActivityIndicator size='large' />
+        ) : !showCompleted ? (
+          <>
+            <FlatList
+              data={goals}
+              renderItem={renderNotCompleted}
+              keyExtractor={item => item._id.toString()}
+            />
+            <Button onPress={() => console.log(goals)} title='log goals' />
+          </>
+        ) : (
           <FlatList
             data={goals}
-            renderItem={renderNotCompleted}
+            renderItem={renderCompleted}
             keyExtractor={item => item._id.toString()}
           />
-          <Button onPress={() => console.log(goals)} title='log goals' />
-        </>
-      ) : (
-        <FlatList
-          data={goals}
-          renderItem={renderCompleted}
-          keyExtractor={item => item._id.toString()}
-        />
-      )}
-    </View>
+        )}
+      </View>
+    </>
   );
 };
 
