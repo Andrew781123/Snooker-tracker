@@ -2,6 +2,7 @@ import React, { useReducer } from "react";
 import GoalsContext from "./GoalsContext";
 import goalsReducer from "./goalsReducer";
 import api from "../../api/tracker";
+import NetInfo from "@react-native-community/netinfo";
 
 const initialState = {
   goals: [],
@@ -36,7 +37,31 @@ const GoalsProvider = ({ children }) => {
         newGoalId: res.data.newGoal._id
       });
     } catch (err) {
-      dispatch({ type: "ADD_GOAL_FAIL", goalId: goal._id });
+      const unsubscribe = NetInfo.addEventListener(async state => {
+        console.log(state);
+        if (state.isInternetReachable) {
+          fetchAgain(userId, goal, unsubscribe);
+        }
+      });
+      // dispatch({ type: "ADD_GOAL_FAIL", goalId: goal._id });
+    }
+  };
+
+  const fetchAgain = async (userId, goal, unsubscribe) => {
+    console.log("try again");
+    unsubscribe();
+    try {
+      const res = await api.post(`/users/${userId.toString()}/goals`, {
+        ...goal
+      });
+
+      dispatch({
+        type: "ADD_GOAL_SUCCESS",
+        goalId: goal._id,
+        newGoalId: res.data.newGoal._id
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -53,14 +78,31 @@ const GoalsProvider = ({ children }) => {
           isCompleted: !isCompleted
         }
       );
+    } catch (err) {
+      dispatch({ type: "TOGGLE_GOAL_FAIL" });
+    }
+  };
 
-      console.log(res.data.updatedGoal);
+  const editGoal = async (userId, goalId, content) => {
+    dispatch({ type: "EDIT_GOAL", content, goalId });
+    try {
+      const res = await api.patch(
+        `/users/${userId.toString()}/goals/${goalId.toString()}`,
+        { content }
+      );
     } catch (err) {}
   };
 
   return (
     <GoalsContext.Provider
-      value={{ goalsState, completeGoal, toggleGoal, addGoal, getGoals }}
+      value={{
+        goalsState,
+        completeGoal,
+        toggleGoal,
+        addGoal,
+        getGoals,
+        editGoal
+      }}
     >
       {children}
     </GoalsContext.Provider>

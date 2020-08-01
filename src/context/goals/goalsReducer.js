@@ -69,6 +69,17 @@ const goalsReducer = (state, action) => {
         })
       };
     }
+    case "EDIT_GOAL": {
+      return {
+        ...state,
+        goals: state.goals.map(goal => {
+          if (goal._id.toString() === action.goalId.toString()) {
+            goal.content = action.content;
+          }
+          return goal;
+        })
+      };
+    }
     default:
       return state;
   }

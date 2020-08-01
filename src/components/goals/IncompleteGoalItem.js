@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import {
   MaterialCommunityIcons,
@@ -6,9 +6,35 @@ import {
   FontAwesome
 } from "@expo/vector-icons";
 
+import EditOverlay from "./EditOverlay";
+
 const IncompleteGoalItem = props => {
   const { goal, completeGoal, index, toggleGoal, userId } = props;
   const { _id, content } = goal;
+
+  const [editMode, setEditMode] = useState({
+    isEdit: false,
+    contentToEdit: ""
+  });
+
+  const disableEdit = () => {
+    setEditMode(editMode => {
+      return {
+        ...editMode,
+        isEdit: !editMode.isEdit
+      };
+    });
+  };
+
+  const enableEdit = () => {
+    setEditMode(editMode => {
+      return {
+        ...editMode,
+        isEdit: !editMode.isEdit,
+        contentToEdit: content
+      };
+    });
+  };
 
   return (
     <View style={styles.goalItemContainer}>
@@ -31,6 +57,7 @@ const IncompleteGoalItem = props => {
             size={24}
             color='black'
             style={{ marginRight: 5 }}
+            onPress={enableEdit}
           />
         </TouchableOpacity>
 
@@ -38,6 +65,14 @@ const IncompleteGoalItem = props => {
           <FontAwesome name='trash-o' size={24} color='black' />
         </TouchableOpacity>
       </View>
+
+      <EditOverlay
+        goalId={_id}
+        userId={userId}
+        isEdit={editMode.isEdit}
+        contentToEdit={editMode.contentToEdit}
+        disableEdit={disableEdit}
+      />
     </View>
   );
 };
