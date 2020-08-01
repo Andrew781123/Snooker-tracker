@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 
 router.use(authUser);
 
-router.get("/:userId/matches", async (req, res) => {
+router.get("/:userId/stats", async (req, res) => {
   const { userId } = req.params;
   const { num } = req.query;
 
@@ -23,7 +23,7 @@ router.get("/:userId/matches", async (req, res) => {
     if (!username)
       return res.status(404).json({ errorMessage: "User not found" });
 
-    const matches = await Match.aggregate([
+    const stats = await Match.aggregate([
       {
         $match: {
           $or: [
@@ -103,33 +103,33 @@ router.get("/:userId/matches", async (req, res) => {
       },
       {
         $project: {
+          attempts: "$attempts",
+          balls_potted: "$balls_potted",
+          balls_per_frame: getFraction("$balls_potted", "$frames_played"),
           pot_success: convertToPercentage(
             getFraction("$balls_potted", "$attempts")
           ),
-          win_rate: convertToPercentage(
-            getFraction("$match_won", "$match_played")
-          ),
-          balls_per_frame: getFraction("$balls_potted", "$frames_played"),
-          points_per_frame: getFraction("$points_scored", "$frames_played"),
-          attempts: "$attempts",
-          balls_potted: "$balls_potted",
           points_scored: "$points_scored",
+          points_per_frame: getFraction("$points_scored", "$frames_played"),
           centuries: "$centuries",
           highest_break: "$highest_break",
           fouls: "$fouls",
           fouls_per_frame: getFraction("$fouls", "$frames_played"),
           frames_won: "$frames_won",
           frames_played: "$frames_played",
-          frame_win_rate: convertToPercentage(
+          frame_winning_percentage: convertToPercentage(
             getFraction("$frames_won", "$frames_played")
           ),
           match_won: 1,
-          match_played: 1
+          match_played: 1,
+          match_winning_percentage: convertToPercentage(
+            getFraction("$match_won", "$match_played")
+          )
         }
       }
     ]);
 
-    res.json({ matches });
+    res.status(200).json({ stats });
 
     function getFraction(numerator, denominator) {
       return {
@@ -179,6 +179,55 @@ router.put("/matches", async (req, res) => {
     await newMatch.save();
 
     res.status(200).json({ message: "Match saved" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errorMessage: err.message });
+  }
+});
+
+//history
+
+router.get("/:userId/histories", async (req, res) => {
+  const { userId } = req.params;
+  const { num, page } = req.query;
+
+  const startIdx = +page > 0 ? (+page - 1) * +num : 0;
+
+  const user_id = mongoose.Types.ObjectId(userId);
+
+  try {
+    const histories = await Match.find({
+      $or: [
+        { "player_one.user_id": user_id },
+        { "player_two.user_id": user_id }
+      ]
+    })
+      .sort({ date: -1 })
+      .skip(startIdx)
+      .limit(+num)
+      .exec();
+
+    historiesObj = histories.map(history => {
+      historyObj = history.toObject();
+
+      historyObj.player_one.pot_success = `${(
+        (history.player_one.balls_potted * 100) /
+        historyObj.player_one.attempts
+      ).toFixed(1)}%`;
+
+      historyObj.player_two.pot_success = `${
+        (history.player_two.balls_potted * 100) / historyObj.player_two.attempts
+      }%`;
+
+      delete historyObj.player_one.attempts;
+      delete historyObj.player_one.balls_potted;
+      delete historyObj.player_two.attempts;
+      delete historyObj.player_two.balls_potted;
+
+      return historyObj;
+    });
+
+    res.json(historiesObj);
   } catch (err) {
     console.log(err);
     res.status(500).json({ errorMessage: err.message });

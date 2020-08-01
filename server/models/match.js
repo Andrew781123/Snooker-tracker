@@ -51,6 +51,10 @@ const matchSchema = new mongoose.Schema({
   frames_played: {
     type: Number,
     required: true
+  },
+  best_of_frames: {
+    type: Number,
+    required: true
   }
 });
 
