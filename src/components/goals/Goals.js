@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import IncompleteGoalItem from "./IncompleteGoalItem";
 import GoalsContext from "../../context/goals/GoalsContext";
 import { FlatList } from "react-native-gesture-handler";
@@ -9,7 +9,7 @@ const Goals = props => {
   const { title, showCompleted } = props;
 
   const { goalsState, toggleGoal } = useContext(GoalsContext);
-  const { goals } = goalsState;
+  const { goals, loadingGoals } = goalsState;
 
   const renderCompleted = ({ item, index }) => {
     if (item.isCompleted) {
@@ -26,20 +26,23 @@ const Goals = props => {
       );
     }
   };
+
   return (
     <View style={styles.goalsContainer}>
       <Text style={styles.goalTitle}>{title}</Text>
-      {!showCompleted ? (
+      {loadingGoals ? (
+        <ActivityIndicator size='large' />
+      ) : !showCompleted ? (
         <FlatList
           data={goals}
           renderItem={renderNotCompleted}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id.toString()}
         />
       ) : (
         <FlatList
           data={goals}
           renderItem={renderCompleted}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id.toString()}
         />
       )}
     </View>

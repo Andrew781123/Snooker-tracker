@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,8 +8,17 @@ import {
   TouchableOpacity
 } from "react-native";
 import Goals from "../components/goals/Goals";
+import GoalsContext from "../context/goals/GoalsContext";
+import authContext from "../context/auth/authContext";
 
 const GoalsScreen = ({ navigation }) => {
+  const [goalContent, setGoalContent] = useState(goalContent);
+
+  const { addGoal, getGoals } = useContext(GoalsContext);
+
+  const { authState } = useContext(authContext);
+  const { user } = authState;
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () =>
       console.log("blur")
@@ -17,6 +26,22 @@ const GoalsScreen = ({ navigation }) => {
 
     return unsubscribe;
   });
+
+  useEffect(() => {
+    getGoals(user._id);
+  }, []);
+
+  const handleAddGoal = () => {
+    setGoalContent("");
+
+    const newGoal = {
+      _id: Date.now().toString() + goalContent,
+      content: goalContent,
+      isCompleted: false
+    };
+
+    addGoal(user._id, newGoal);
+  };
 
   return (
     <View style={styles.goalScreenContainer}>
@@ -26,8 +51,10 @@ const GoalsScreen = ({ navigation }) => {
           placeholder='Add new goal'
           placeholderTextColor='white'
           style={styles.input}
+          value={goalContent}
+          onChangeText={text => setGoalContent(text)}
         />
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddGoal}>
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>

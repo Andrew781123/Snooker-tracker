@@ -7,6 +7,19 @@ const mongoose = require("mongoose");
 
 router.use(authUser);
 
+router.get("/current", async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) return res.status(404).json({ errorMessage: "User not found" });
+
+    res.status(200).json({ user });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errorMessage: err.message });
+  }
+});
+
 router.get("/:userId/stats", async (req, res) => {
   const { userId } = req.params;
   const { num } = req.query;

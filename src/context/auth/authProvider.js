@@ -9,11 +9,23 @@ const initialState = {
   loading: null,
   error: null,
   loadingToken: true,
-  authLoading: false
+  authLoading: false,
+  user: null
 };
 
 const authProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, initialState);
+
+  const getCurrentUser = async () => {
+    try {
+      const res = await api.get("/users/current");
+
+      console.log(res.data.user);
+      dispatch({ type: "GET_CURRENT_USER", user: res.data.user });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const register = async ({ username, password }) => {
     try {
@@ -76,7 +88,8 @@ const authProvider = ({ children }) => {
         register,
         devLogin,
         clearErrors,
-        tryLogin
+        tryLogin,
+        getCurrentUser
       }}
     >
       {children}

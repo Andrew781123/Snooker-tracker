@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MyProfileStack from "./MyProfileStack";
@@ -9,11 +9,18 @@ import GoalsStack from "./GoalsStack";
 import { createStackNavigator } from "@react-navigation/stack";
 import UserProfileScreen from "../screens/UserProfileScreen";
 import SearchStack from "./SearchStack";
+import authContext from "../context/auth/authContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const MainStack = () => {
+  const { getCurrentUser } = useContext(authContext);
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
