@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     const user = await User.findById(userId);
     const savedGoal = await newGoal.save();
     user.goals.push(savedGoal._id);
-    await users.save();
+    await user.save();
 
     res.status(201).json({ newGoal: savedGoal });
   } catch (err) {

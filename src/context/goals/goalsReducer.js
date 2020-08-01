@@ -22,7 +22,7 @@ const goalsReducer = (state, action) => {
       return {
         ...state,
         goals: state.goals.map(goal => {
-          if (goal._id.toString() === goalId) {
+          if (goal._id.toString() === action.goalId) {
             goal._id = action.newGoalId;
           }
           return goal;
