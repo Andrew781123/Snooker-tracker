@@ -24,6 +24,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  console.log("adding goal");
   const userId = req.user._id;
   const { content } = req.body;
 

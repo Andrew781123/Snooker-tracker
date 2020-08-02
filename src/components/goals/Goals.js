@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -21,6 +21,10 @@ const Goals = props => {
 
   const { authState } = useContext(authContext);
   const { user } = authState;
+
+  useEffect(() => {
+    console.log(`goalsError: ${goalsError}`);
+  }, [goalsError]);
 
   const renderCompleted = ({ item, index }) => {
     if (item.isCompleted) {
@@ -50,7 +54,7 @@ const Goals = props => {
 
   return (
     <>
-      {goalsError && <ErrorMessage errorMessage={goalsError} />}
+      {goalsError !== null && <ErrorMessage errorMessage={goalsError} />}
       <View style={styles.goalsContainer}>
         <Text style={styles.goalTitle}>{title}</Text>
         {loadingGoals ? (

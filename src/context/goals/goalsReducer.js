@@ -6,6 +6,12 @@ const goalsReducer = (state, action) => {
         loadingGoals: true
       };
     }
+    case "CLEAR_GOALS_ERROR": {
+      return {
+        ...state,
+        goalsError: null
+      };
+    }
     case "ADD_GOAL": {
       return {
         ...state,
@@ -15,7 +21,7 @@ const goalsReducer = (state, action) => {
     case "ADD_GOAL_FAIL": {
       return {
         ...state,
-        goals: state.goals.filter(goal => goal._id !== action.goalId)
+        goalsError: action.errorMessage
       };
     }
     case "ADD_GOAL_SUCCESS": {
@@ -26,7 +32,8 @@ const goalsReducer = (state, action) => {
             goal._id = action.newGoalId;
           }
           return goal;
-        })
+        }),
+        goalsError: null
       };
     }
     case "GET_GOALS_SUCCESS": {
