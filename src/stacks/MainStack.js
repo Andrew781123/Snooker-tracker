@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useLayoutEffect } from "react";
 import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MyProfileStack from "./MyProfileStack";
@@ -17,8 +17,8 @@ const Stack = createStackNavigator();
 const MainStack = () => {
   const { getCurrentUser } = useContext(authContext);
 
-  useEffect(() => {
-    getCurrentUser();
+  useLayoutEffect(() => {
+    // getCurrentUser();
   }, []);
 
   return (

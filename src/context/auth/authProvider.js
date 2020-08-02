@@ -17,10 +17,12 @@ const authProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, initialState);
 
   const getCurrentUser = async () => {
+    dispatch({ type: "SET_AUTH_LOADING" });
     try {
       const res = await api.get("/users/current");
 
-      dispatch({ type: "GET_CURRENT_USER", user: res.data.user });
+      return res.data.user;
+      // dispatch({ type: "GET_CURRENT_USER", user: res.data.user });
     } catch (err) {
       console.log(err);
     }
@@ -32,7 +34,11 @@ const authProvider = ({ children }) => {
 
       await saveToken(res.data.token);
 
-      dispatch({ type: "REGISTER", token: res.data.token });
+      dispatch({
+        type: "REGISTER",
+        token: res.data.token,
+        user: res.data.user
+      });
     } catch (err) {
       console.log(err.response.data);
       dispatch({
@@ -49,7 +55,7 @@ const authProvider = ({ children }) => {
 
       await saveToken(res.data.token);
 
-      dispatch({ type: "LOGIN", token: res.data.token });
+      dispatch({ type: "LOGIN", token: res.data.token, user: res.data.user });
     } catch (err) {
       console.log(err);
       dispatch({ type: "LOGIN_FAIL", errMsg: "Something wrong :(" });
@@ -59,7 +65,8 @@ const authProvider = ({ children }) => {
   const tryLogin = async () => {
     const token = await AsyncStorage.getItem("token");
     if (token) {
-      dispatch({ type: "LOGIN", token });
+      const user = await getCurrentUser();
+      dispatch({ type: "LOGIN", token, user });
     } else {
       dispatch({ type: "SET_TRY_LOGIN" });
     }

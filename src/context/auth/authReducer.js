@@ -37,7 +37,8 @@ const authReducer = (state, action) => {
         ...state,
         token: action.token,
         loadingToken: false,
-        authLoading: false
+        authLoading: false,
+        user: action.user
       };
     }
     case "DEV_LOGIN": {

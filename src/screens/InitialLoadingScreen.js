@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { Text } from "react-native";
+import { Text, StyleSheet, View, ActivityIndicator } from "react-native";
 import authContext from "../context/auth/authContext";
 
 const InitialLoadingScreen = () => {
@@ -9,7 +9,19 @@ const InitialLoadingScreen = () => {
     tryLogin();
   }, []);
 
-  return null;
+  return (
+    <View style={styles.loading}>
+      <ActivityIndicator size='large' />
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  }
+});
 
 export default InitialLoadingScreen;

@@ -11,9 +11,9 @@ const Stack = createStackNavigator();
 
 const RootStack = () => {
   const { authState } = useContext(authContext);
-  const { token, loadingToken } = authState;
+  const { token, loadingToken, authLoading } = authState;
 
-  if (loadingToken) {
+  if (loadingToken || authLoading) {
     return <InitialLoadingScreen />;
   }
 
