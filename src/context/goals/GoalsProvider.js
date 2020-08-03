@@ -24,11 +24,16 @@ const GoalsProvider = ({ children }) => {
     }
   };
 
-  const addGoal = async (userId, goal) => {
-    dispatch({
-      type: "ADD_GOAL",
-      goal
-    });
+  const addGoal = async (userId, goal, unsubscribe) => {
+    if (unsubscribe) {
+      unsubscribe();
+    } else {
+      dispatch({
+        type: "ADD_GOAL",
+        goal
+      });
+    }
+
     try {
       const res = await api.post(`/users/${userId.toString()}/goals`, {
         ...goal
@@ -42,36 +47,17 @@ const GoalsProvider = ({ children }) => {
     } catch (err) {
       NetInfo.fetch().then(state => {
         if (!state.isConnected) {
-          console.log("no wifi");
           dispatch({
             type: "ADD_GOAL_FAIL",
             errorMessage: "You are offline, your goal will be added once online"
           });
           const unsubscribe = NetInfo.addEventListener(async state => {
             if (state.isInternetReachable) {
-              fetchAgain(userId, goal, unsubscribe);
+              addGoal(userId, goal, unsubscribe);
             }
           });
         }
       });
-    }
-  };
-
-  const fetchAgain = async (userId, goal, unsubscribe) => {
-    console.log("try again");
-    unsubscribe();
-    try {
-      const res = await api.post(`/users/${userId.toString()}/goals`, {
-        ...goal
-      });
-
-      dispatch({
-        type: "ADD_GOAL_SUCCESS",
-        goalId: goal._id,
-        newGoalId: res.data.newGoal._id
-      });
-    } catch (err) {
-      console.log(err);
     }
   };
 
