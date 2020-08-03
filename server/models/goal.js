@@ -9,8 +9,9 @@ const goalSchema = new mongoose.Schema({
     type: Date,
     default: () => new Date()
   },
-  reatched_at: {
-    type: Date
+  reached_at: {
+    type: Date,
+    default: null
   },
   isCompleted: {
     type: Boolean,

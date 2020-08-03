@@ -51,6 +51,7 @@ const GoalsProvider = ({ children }) => {
             type: "ADD_GOAL_FAIL",
             errorMessage: "You are offline, your goal will be added once online"
           });
+
           const unsubscribe = NetInfo.addEventListener(async state => {
             if (state.isInternetReachable) {
               addGoal(userId, goal, unsubscribe);
@@ -61,17 +62,14 @@ const GoalsProvider = ({ children }) => {
     }
   };
 
-  const completeGoal = id => {
-    dispatch({ type: "COMPLETE_GOAL", id });
-  };
-
-  const toggleGoal = async (userId, goalId, isCompleted) => {
-    dispatch({ type: "TOGGLE_GOAL", goalId: goalId.toString() });
+  const toggleGoal = async (userId, goalId, isCompleted, reached_at) => {
+    dispatch({ type: "TOGGLE_GOAL", goalId: goalId.toString(), reached_at });
     try {
       const res = await api.patch(
         `/users/${userId.toString()}/goals/${goalId.toString()}`,
         {
-          isCompleted: !isCompleted
+          isCompleted: !isCompleted,
+          reached_at
         }
       );
     } catch (err) {
@@ -102,7 +100,6 @@ const GoalsProvider = ({ children }) => {
     <GoalsContext.Provider
       value={{
         goalsState,
-        completeGoal,
         toggleGoal,
         addGoal,
         getGoals,

@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/user");
 const Goal = require("../models/goal");
 const authUser = require("../middleware/authUser");
+const { update } = require("../models/user");
 const router = express.Router();
 
 router.use(authUser);
@@ -24,7 +25,6 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  console.log("adding goal");
   const userId = req.user._id;
   const { content } = req.body;
 

@@ -1,20 +1,33 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import formatDate from "../../utils/formateDate";
 
 const CompletedGoalItem = props => {
-  const { goal, index, toggleGoal, userId } = props;
-  const { _id, content } = goal;
+  const { goal, index, toggleGoal, userId, handleDelete } = props;
+  const { _id, content, reached_at, created_at } = goal;
+
+  const reachedAt = formatDate(reached_at);
+  const createdAt = formatDate(created_at);
 
   return (
     <View style={styles.goalItemContainer}>
       <Text style={styles.number}>#{index}</Text>
-      <Text style={styles.goalItemContent}>{content}</Text>
+      <View style={styles.goalInfo}>
+        <Text style={styles.goalItemContent}>{content}</Text>
+        <Text style={styles.reactedAtText}>Created: {reachedAt}</Text>
+        <Text style={styles.reactedAtText}>Reached: {createdAt}</Text>
+      </View>
+
       <View style={styles.optionButtons}>
         <TouchableOpacity
           onPress={() => toggleGoal(userId, _id, goal.isCompleted)}
         >
           <MaterialCommunityIcons name='reload' size={24} color='black' />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => handleDelete(_id)}>
+          <FontAwesome name='trash-o' size={24} color='black' />
         </TouchableOpacity>
       </View>
     </View>
@@ -42,5 +55,9 @@ const styles = StyleSheet.create({
   optionButtons: {
     flexDirection: "row",
     marginLeft: "auto"
+  },
+  goalInfo: {},
+  reactedAtText: {
+    color: "grey"
   }
 });

@@ -46,12 +46,13 @@ const IncompleteGoalItem = props => {
       <Text style={styles.goalItemContent}>{content}</Text>
 
       <View style={styles.optionButtons}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => toggleGoal(userId, _id, goal.isCompleted, new Date())}
+        >
           <MaterialCommunityIcons
             name={"checkbox-blank-outline"}
             size={24}
             color='black'
-            onPress={() => toggleGoal(userId, _id, goal.isCompleted)}
             style={{ marginRight: 5 }}
           />
         </TouchableOpacity>
@@ -69,7 +70,10 @@ const IncompleteGoalItem = props => {
         </TouchableOpacity>
       </View>
 
-      <Overlay isVisible={showDelete}>
+      <Overlay
+        isVisible={showDelete}
+        onBackdropPress={() => setShowDelete(false)}
+      >
         <DeleteOverlayContent
           handleDelete={handleDelete}
           setShowDelete={setShowDelete}
