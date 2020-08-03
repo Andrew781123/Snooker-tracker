@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Overlay } from "react-native-elements";
 import {
   MaterialCommunityIcons,
   FontAwesome5,
@@ -7,15 +8,18 @@ import {
 } from "@expo/vector-icons";
 
 import EditOverlay from "./EditOverlay";
+import DeleteOverlayContent from "./DeleteOverlay";
 
 const IncompleteGoalItem = props => {
-  const { goal, completeGoal, index, toggleGoal, userId } = props;
+  const { goal, completeGoal, index, toggleGoal, handleDelete, userId } = props;
   const { _id, content } = goal;
 
   const [editMode, setEditMode] = useState({
     isEdit: false,
     contentToEdit: ""
   });
+
+  const [showDelete, setShowDelete] = useState(false);
 
   const disableEdit = () => {
     setEditMode(editMode => {
@@ -51,20 +55,28 @@ const IncompleteGoalItem = props => {
             style={{ marginRight: 5 }}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={enableEdit}>
           <FontAwesome5
             name='edit'
             size={24}
             color='black'
             style={{ marginRight: 5 }}
-            onPress={enableEdit}
           />
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowDelete(true)}>
           <FontAwesome name='trash-o' size={24} color='black' />
         </TouchableOpacity>
       </View>
+
+      <Overlay isVisible={showDelete}>
+        <DeleteOverlayContent
+          handleDelete={handleDelete}
+          setShowDelete={setShowDelete}
+          goalId={_id}
+          showDelete={showDelete}
+        />
+      </Overlay>
 
       <EditOverlay
         goalId={_id}

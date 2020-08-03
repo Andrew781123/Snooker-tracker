@@ -87,6 +87,14 @@ const goalsReducer = (state, action) => {
         })
       };
     }
+    case "DELETE_GOAL": {
+      return {
+        ...state,
+        goals: state.goals.filter(
+          goal => goal._id.toString() !== action.goalId.toString()
+        )
+      };
+    }
     default:
       return state;
   }

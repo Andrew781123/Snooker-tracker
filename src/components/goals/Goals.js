@@ -16,7 +16,7 @@ import authContext from "../../context/auth/authContext";
 const Goals = props => {
   const { title, showCompleted } = props;
 
-  const { goalsState, toggleGoal } = useContext(GoalsContext);
+  const { goalsState, toggleGoal, deleteGoal } = useContext(GoalsContext);
   const { goals, loadingGoals, goalsError } = goalsState;
 
   const { authState } = useContext(authContext);
@@ -26,6 +26,10 @@ const Goals = props => {
     console.log(`goalsError: ${goalsError}`);
   }, [goalsError]);
 
+  const handleDelete = goalId => {
+    deleteGoal(user._id, goalId);
+  };
+
   const renderCompleted = ({ item, index }) => {
     if (item.isCompleted) {
       return (
@@ -34,6 +38,7 @@ const Goals = props => {
           index={index}
           toggleGoal={toggleGoal}
           userId={user._id}
+          handleDelete={handleDelete}
         />
       );
     }
@@ -47,6 +52,7 @@ const Goals = props => {
           index={index}
           toggleGoal={toggleGoal}
           userId={user._id}
+          handleDelete={handleDelete}
         />
       );
     }

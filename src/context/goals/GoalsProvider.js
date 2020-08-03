@@ -103,6 +103,15 @@ const GoalsProvider = ({ children }) => {
     } catch (err) {}
   };
 
+  const deleteGoal = async (userId, goalId) => {
+    dispatch({ type: "DELETE_GOAL", userId, goalId });
+    try {
+      const res = await api.delete(
+        `/users/${userId.toString()}/goals/${goalId.toString()}`
+      );
+    } catch (err) {}
+  };
+
   return (
     <GoalsContext.Provider
       value={{
@@ -111,7 +120,8 @@ const GoalsProvider = ({ children }) => {
         toggleGoal,
         addGoal,
         getGoals,
-        editGoal
+        editGoal,
+        deleteGoal
       }}
     >
       {children}

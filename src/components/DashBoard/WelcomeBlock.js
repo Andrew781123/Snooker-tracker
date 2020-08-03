@@ -10,12 +10,14 @@ const stat = {
   frameWinRate: "70%"
 };
 
-const WelcomeBlock = () => {
+const WelcomeBlock = props => {
+  const { username } = props;
+
   return (
     <View style={styles.welcomeBlockContainer}>
       <View style={styles.welcomeMessage}>
         <Text style={styles.welcomeText}>Welcome Back</Text>
-        <Text style={styles.username}>Andrew1123</Text>
+        <Text style={styles.username}>{username}</Text>
       </View>
       <Stats stat={stat} title='Last 10 Stats' />
     </View>
