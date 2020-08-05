@@ -22,7 +22,8 @@ const authReducer = (state, action) => {
       return {
         ...state,
         token: action.token,
-        authLoading: false
+        authLoading: false,
+        user: action.user
       };
     }
     case "REGISTER_FAIL": {
