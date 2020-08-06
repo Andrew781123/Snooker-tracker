@@ -21,6 +21,7 @@ router.get("/current", async (req, res) => {
 });
 
 router.get("/:userId/stats", async (req, res) => {
+  console.log("getting stats");
   const { userId } = req.params;
   const { num } = req.query;
 
@@ -141,6 +142,8 @@ router.get("/:userId/stats", async (req, res) => {
         }
       }
     ]);
+
+    console.log(stats);
 
     res.status(200).json({ stats });
 
