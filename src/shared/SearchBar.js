@@ -5,10 +5,11 @@ import players from "../resources/snookerPlayers";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import PlayerResultItem from "../components/Forms/PlayerResultItem";
 
-const SearchBar = () => {
+const SearchBar = props => {
+  const { playerSelected, setPlayerSelected } = props;
+
   const [searchParams, setSearchParams] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [playerSelected, setPlayerSelected] = useState(null);
 
   useEffect(() => {
     if (searchParams !== "") {

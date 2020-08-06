@@ -62,6 +62,18 @@ const authReducer = (state, action) => {
         token: null
       };
     }
+    case "SETUP_USER_SUCCESS": {
+      return {
+        ...state,
+        user: action.updatedUser
+      };
+    }
+    case "SETUP_USER_FAIL": {
+      return {
+        ...state,
+        error: action.error
+      };
+    }
     case "CLEAR_ERRORS": {
       return {
         ...state,

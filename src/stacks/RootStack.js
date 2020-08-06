@@ -15,6 +15,7 @@ const RootStack = () => {
   const { token, loadingToken, authLoading, user } = authState;
 
   if (loadingToken || authLoading) {
+    console.log(loadingToken, authLoading);
     return <InitialLoadingScreen />;
   } else {
     if (token) {
