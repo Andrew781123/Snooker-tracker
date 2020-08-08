@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainStack from "./MainStack";
 import authContext from "../context/auth/authContext";
@@ -14,8 +14,12 @@ const RootStack = () => {
   const { authState } = useContext(authContext);
   const { token, loadingToken, authLoading, user } = authState;
 
+  useEffect(() => {
+    console.log(
+      `loading token: ${loadingToken}, loading user:  ${authLoading}`
+    );
+  }, [loadingToken, authLoading]);
   if (loadingToken || authLoading) {
-    console.log(loadingToken, authLoading);
     return <InitialLoadingScreen />;
   } else {
     if (token) {

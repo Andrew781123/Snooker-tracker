@@ -97,6 +97,13 @@ const matchReducer = (state, action) => {
       };
     }
 
+    case "FOUL": {
+      return {
+        ...state,
+        isFoul: true
+      };
+    }
+
     case "FRAME_OVER": {
       const winner = action.payload;
       return {

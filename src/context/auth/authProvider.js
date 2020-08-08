@@ -4,6 +4,7 @@ import authReducer from "./authReducer";
 import api from "../../api/tracker";
 import AsyncStorage from "@react-native-community/async-storage";
 import moment from "moment";
+import { createIconSetFromFontello } from "@expo/vector-icons";
 
 const initialState = {
   token: null,
@@ -58,7 +59,7 @@ const authProvider = ({ children }) => {
 
       dispatch({ type: "LOGIN", token: res.data.token, user: res.data.user });
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       dispatch({ type: "LOGIN_FAIL", errMsg: "Something wrong :(" });
     }
   };

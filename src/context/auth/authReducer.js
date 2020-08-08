@@ -34,6 +34,7 @@ const authReducer = (state, action) => {
       };
     }
     case "LOGIN": {
+      console.log("login");
       return {
         ...state,
         token: action.token,

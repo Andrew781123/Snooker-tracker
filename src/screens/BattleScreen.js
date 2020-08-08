@@ -9,6 +9,7 @@ import balls from "../resources/ballInfo";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import BigText from "../components/BigText";
 import Break from "../components/Break";
+import Balls from "../components/Balls";
 
 const initialMatchInfo = {
   playerOne: {
@@ -135,7 +136,9 @@ const BattleScreen = props => {
     }
   };
 
-  const handleFoul = () => {};
+  const handleFoul = () => {
+    dispatch({ type: "FOUL" });
+  };
 
   const handleSafety = () => {
     dispatch({ type: "SAFETY" });
@@ -191,44 +194,15 @@ const BattleScreen = props => {
       <View>
         <Text>{playerToBreakOff} break off</Text>
       </View>
-      <View style={styles.balls}>
-        {matchInfo.isRedNext ? (
-          <>
-            <Ball
-              text='foul'
-              frameWinner={matchInfo.frameWinner}
-              handleClick={handleFoul}
-              currentColor={matchInfo.currentColor}
-            />
-            <Ball
-              color='red'
-              score={1}
-              frameWinner={matchInfo.frameWinner}
-              handleClick={handlePot}
-              currentColor={matchInfo.currentColor}
-            />
-            <Ball
-              text='safety'
-              frameWinner={matchInfo.frameWinner}
-              handleClick={handleSafety}
-            />
-            <Ball
-              text='miss'
-              frameWinner={matchInfo.frameWinner}
-              handleClick={handleMiss}
-              currentColor={matchInfo.currentColor}
-            />
-          </>
-        ) : (
-          <ColorBalls
-            handlePot={handlePot}
-            handleFoul={handleFoul}
-            handleMiss={handleMiss}
-            frameWinner={matchInfo.frameWinner}
-            currentColor={matchInfo.currentColor}
-          />
-        )}
-      </View>
+      <Balls
+        isRedNext={matchInfo.isRedNext}
+        frameWinner={matchInfo.frameWinner}
+        currentColor={matchInfo.currentColor}
+        handleFoul={handleFoul}
+        handlePot={handlePot}
+        handleSafety={handleSafety}
+        handleMiss={handleMiss}
+      />
 
       <ScoreBoard
         p1Score={matchInfo.playerOne.score}
@@ -262,14 +236,7 @@ const BattleScreen = props => {
 
 export default BattleScreen;
 
-const styles = StyleSheet.create({
-  balls: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 10
-  }
-});
+const styles = StyleSheet.create({});
 
 const determineWinner = (p1Score, p2Score, p1Name, p2Name) => {
   return p1Score > p2Score ? p1Name : p1Score < p2Score ? p2Name : null;
