@@ -17,7 +17,9 @@ const Balls = props => {
     removeReds,
     handleForcedPlayOn,
     handlePutBack,
-    handlePlaysOn
+    handlePlaysOn,
+    handleFreeBall,
+    handleNonFreeBall
   } = props;
 
   const handleMissFoul = () => {};
@@ -96,6 +98,25 @@ const Balls = props => {
               text='Force play on'
               frameWinner={frameWinner}
               handleClick={handleForcedPlayOn}
+              currentColor={currentColor}
+            />
+          </>
+        );
+      }
+
+      case "DETERMINE_FREE_BALL": {
+        return (
+          <>
+            <Ball
+              text='Yes'
+              frameWinner={frameWinner}
+              handleClick={handleFreeBall}
+              currentColor={currentColor}
+            />
+            <Ball
+              text='No'
+              frameWinner={frameWinner}
+              handleClick={handleNonFreeBall}
               currentColor={currentColor}
             />
           </>

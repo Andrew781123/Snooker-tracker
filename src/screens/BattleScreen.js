@@ -159,6 +159,14 @@ const BattleScreen = props => {
     dispatch({ type: "PUT_BACK" });
   };
 
+  const handleFreeBall = () => {
+    dispatch({ type: "FREE_BALL" });
+  };
+
+  const handleNonFreeBall = () => {
+    dispatch({ type: "NON_FREE_BALL" });
+  };
+
   const handlePlaysOn = () => {
     dispatch({ type: "PLAYES_ON" });
   };
@@ -232,6 +240,8 @@ const BattleScreen = props => {
           forcedPlayOn={handleForcedPlayOn}
           handlePutBack={handlePutBack}
           handlePlaysOn={handlePlaysOn}
+          handleFreeBall={handleFreeBall}
+          handleNonFreeBall={handleNonFreeBall}
         />
       </View>
 

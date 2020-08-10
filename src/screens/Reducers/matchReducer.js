@@ -146,6 +146,24 @@ const matchReducer = (state, action) => {
     case "PLAYES_ON": {
       return {
         ...state,
+        foulOption: "DETERMINE_FREE_BALL"
+      };
+    }
+
+    case "FREE_BALL": {
+      return {
+        ...state,
+        isPlayerOneTurn: !state.isPlayerOneTurn,
+        foulOption: null,
+        isRedNext: true,
+        currentBreak: 0,
+        redsRemaining: state.redsRemaining + 1
+      };
+    }
+
+    case "NON_FREE_BALL": {
+      return {
+        ...state,
         isPlayerOneTurn: !state.isPlayerOneTurn,
         foulOption: null,
         isRedNext: true,
