@@ -19,12 +19,12 @@ const Balls = props => {
     handlePutBack,
     handlePlaysOn,
     handleFreeBall,
-    handleNonFreeBall
+    handleNonFreeBall,
+    handleFreeBallPot,
+    handleFreeBallMiss,
+    handleFreeBallFoul,
+    handleFreeBallSafety
   } = props;
-
-  const handleMissFoul = () => {};
-
-  const handleNotMissFoul = () => {};
 
   if (foulOption) {
     switch (foulOption) {
@@ -117,6 +117,38 @@ const Balls = props => {
               text='No'
               frameWinner={frameWinner}
               handleClick={handleNonFreeBall}
+              currentColor={currentColor}
+            />
+          </>
+        );
+      }
+
+      case "FREE_BALL": {
+        return (
+          <>
+            <Ball
+              text='foul'
+              frameWinner={frameWinner}
+              handleClick={handleFreeBallFoul}
+              currentColor={currentColor}
+            />
+            <Ball
+              text='Potted free ball'
+              score={1}
+              frameWinner={frameWinner}
+              handleClick={handleFreeBallPot}
+              currentColor={currentColor}
+            />
+            <Ball
+              text='safety'
+              frameWinner={frameWinner}
+              handleClick={handleFreeBallSafety}
+              currentColor={currentColor}
+            />
+            <Ball
+              text='miss'
+              frameWinner={frameWinner}
+              handleClick={handleFreeBallMiss}
               currentColor={currentColor}
             />
           </>

@@ -27,6 +27,7 @@ const initialMatchInfo = {
     frame: 0
   },
   foulOption: null,
+  isFreeBall: false,
   frame: 1,
   framesInfo: [],
   currentBreak: 0,
@@ -137,10 +138,9 @@ const BattleScreen = props => {
   };
 
   const handleFoul = () => {
-    dispatch({ type: "FOUL" });
+    const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
+    dispatch({ type: "FOUL", payload: player });
   };
-
-  const handleMissFoul = () => {};
 
   const updateFoulPoint = foulPoint => {
     const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
@@ -173,6 +173,29 @@ const BattleScreen = props => {
 
   const handleSafety = () => {
     dispatch({ type: "SAFETY" });
+  };
+
+  const handleFreeBallPot = score => {
+    const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
+    const isUpdateHighestBreak = compareBreak(score, matchInfo[player]);
+    dispatch({
+      type: "FREE_BALL_POT",
+      payload: { player, score, isUpdateHighestBreak }
+    });
+  };
+
+  const handleFreeBallMiss = () => {
+    const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
+    dispatch({ type: "FREE_BALL_MISS", payload: player });
+  };
+
+  const handleFreeBallFoul = () => {
+    const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
+    dispatch({ type: "FREE_BALL_FOUL", payload: player });
+  };
+
+  const handleFreeBallSafety = () => {
+    dispatch({ type: "FREE_BALL_SAFETY" });
   };
 
   const startNewFrame = () => {
@@ -237,11 +260,15 @@ const BattleScreen = props => {
           handleMiss={handleMiss}
           updateFoulPoint={updateFoulPoint}
           removeReds={removeReds}
-          forcedPlayOn={handleForcedPlayOn}
+          handleForcedPlayOn={handleForcedPlayOn}
           handlePutBack={handlePutBack}
           handlePlaysOn={handlePlaysOn}
           handleFreeBall={handleFreeBall}
           handleNonFreeBall={handleNonFreeBall}
+          handleFreeBallPot={handleFreeBallPot}
+          handleFreeBallMiss={handleFreeBallMiss}
+          handleFreeBallFoul={handleFreeBallFoul}
+          handleFreeBallSafety={handleFreeBallSafety}
         />
       </View>
 
