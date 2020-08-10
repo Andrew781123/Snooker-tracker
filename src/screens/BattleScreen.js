@@ -26,12 +26,12 @@ const initialMatchInfo = {
     score: 0,
     frame: 0
   },
+  foulOption: null,
   frame: 1,
   framesInfo: [],
   currentBreak: 0,
   playerToBreakOff: null,
   isPlayerOneTurn: null,
-  isFoul: false,
   isRedNext: true,
   redsRemaining: 6,
   scoreRemaining: null,
@@ -140,6 +140,29 @@ const BattleScreen = props => {
     dispatch({ type: "FOUL" });
   };
 
+  const handleMissFoul = () => {};
+
+  const updateFoulPoint = foulPoint => {
+    const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
+    dispatch({ type: "UPDATE_FOUL_POINT", payload: { player, foulPoint } });
+  };
+
+  const removeReds = redNum => {
+    dispatch({ type: "REMOVE_REDS", payload: redNum });
+  };
+
+  const handleForcedPlayOn = () => {
+    dispatch({ type: "FOUL_PLAYER_FORCED_PLAY_ON" });
+  };
+
+  const handlePutBack = () => {
+    dispatch({ type: "PUT_BACK" });
+  };
+
+  const handlePlaysOn = () => {
+    dispatch({ type: "PLAYES_ON" });
+  };
+
   const handleSafety = () => {
     dispatch({ type: "SAFETY" });
   };
@@ -194,15 +217,23 @@ const BattleScreen = props => {
       <View>
         <Text>{playerToBreakOff} break off</Text>
       </View>
-      <Balls
-        isRedNext={matchInfo.isRedNext}
-        frameWinner={matchInfo.frameWinner}
-        currentColor={matchInfo.currentColor}
-        handleFoul={handleFoul}
-        handlePot={handlePot}
-        handleSafety={handleSafety}
-        handleMiss={handleMiss}
-      />
+      <View style={styles.balls}>
+        <Balls
+          isRedNext={matchInfo.isRedNext}
+          foulOption={matchInfo.foulOption}
+          frameWinner={matchInfo.frameWinner}
+          currentColor={matchInfo.currentColor}
+          handleFoul={handleFoul}
+          handlePot={handlePot}
+          handleSafety={handleSafety}
+          handleMiss={handleMiss}
+          updateFoulPoint={updateFoulPoint}
+          removeReds={removeReds}
+          forcedPlayOn={handleForcedPlayOn}
+          handlePutBack={handlePutBack}
+          handlePlaysOn={handlePlaysOn}
+        />
+      </View>
 
       <ScoreBoard
         p1Score={matchInfo.playerOne.score}
@@ -236,7 +267,14 @@ const BattleScreen = props => {
 
 export default BattleScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  balls: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 10
+  }
+});
 
 const determineWinner = (p1Score, p2Score, p1Name, p2Name) => {
   return p1Score > p2Score ? p1Name : p1Score < p2Score ? p2Name : null;

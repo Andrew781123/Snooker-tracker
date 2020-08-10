@@ -98,9 +98,58 @@ const matchReducer = (state, action) => {
     }
 
     case "FOUL": {
+      console.log("foul");
       return {
         ...state,
-        isFoul: true
+        foulOption: "GET_FOUL_POINTS"
+      };
+    }
+
+    case "UPDATE_FOUL_POINT": {
+      const { player, foulPoint } = action.payload;
+
+      return {
+        ...state,
+        foulOption: "GET_NUMBERS_OF_REDS_POTTED",
+        [player]: {
+          ...state[player],
+          score: state[player].score + foulPoint
+        }
+      };
+    }
+
+    case "REMOVE_REDS": {
+      return {
+        ...state,
+        redsRemaining: state.redsRemaining - action.payload,
+        foulOption: "FOUL_FOLLOWUP_ACTIONS"
+      };
+    }
+
+    case "FOUL_PLAYER_FORCED_PLAY_ON": {
+      return {
+        ...state,
+        foulOption: null,
+        isRedNext: true,
+        currentBreak: 0
+      };
+    }
+
+    case "PUT_BACK": {
+      return {
+        ...state,
+        foulOption: null,
+        currentBreak: 0
+      };
+    }
+
+    case "PLAYES_ON": {
+      return {
+        ...state,
+        isPlayerOneTurn: !state.isPlayerOneTurn,
+        foulOption: null,
+        isRedNext: true,
+        currentBreak: 0
       };
     }
 
