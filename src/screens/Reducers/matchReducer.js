@@ -1,4 +1,4 @@
-const updateMatchInfo = (state, score) => {
+const updatesOnPot = (state, score) => {
   return {
     ...state,
     currentBreak: state.currentBreak + score,
@@ -17,7 +17,7 @@ const updateMatchInfo = (state, score) => {
   };
 };
 
-const updateMatchInfoOnMiss = (state, player) => {
+const updatesOnMiss = (state, player) => {
   return {
     ...state,
     [player]: {
@@ -30,7 +30,7 @@ const updateMatchInfoOnMiss = (state, player) => {
   };
 };
 
-const updateMatchInfoOnFoul = (state, player) => {
+const updatesOnFoul = (state, player) => {
   return {
     ...state,
     [player]: {
@@ -42,26 +42,27 @@ const updateMatchInfoOnFoul = (state, player) => {
 };
 
 const matchReducer = (state, action) => {
+  const { playerToBreakOff, playerOneName, playerTwoName } = action.payload;
+
   switch (action.type) {
     case "MATCH_INIT": {
       return {
         ...state,
-        playerToBreakOff: action.payload.playerToBreakOff,
+        instruction: `${playerOneName} breaks off`,
+        playerToBreakOff: playerToBreakOff,
 
         scoreRemaining: 8 * state.redsRemaining + 27,
-        isPlayerOneTurn:
-          action.payload.playerToBreakOff === action.payload.playerOneName
-            ? true
-            : false,
-        playerOneName: action.payload.playerOneName,
-        playerTwoName: action.payload.playerTwoName
+        isPlayerOneTurn: playerToBreakOff === playerOneName ? true : false,
+        playerOne: { ...state.playerOne, name: playerOneName },
+        playerTwo: { ...state.playerTwo, name: playerTwoName }
       };
     }
 
     case "POT": {
       const { score, isUpdateHighestBreak, player } = action.payload;
       return {
-        ...updateMatchInfo(state, score),
+        ...updatesOnPot(state, score),
+        instruction: `${player.name}'s turn`,
         [player]: {
           ...state[player],
           score: state[player].score + score,
@@ -77,7 +78,7 @@ const matchReducer = (state, action) => {
     case "MISS": {
       const player = action.payload;
       return {
-        ...updateMatchInfoOnMiss(state, player),
+        ...updatesOnMiss(state, player),
         currentColor: state.redsRemaining === 0 ? "yellow" : null,
         scoreRemaining: state.isRedNext
           ? state.scoreRemaining
@@ -89,7 +90,7 @@ const matchReducer = (state, action) => {
       const player = action.payload;
 
       return {
-        ...updateMatchInfoOnMiss(state, player),
+        ...updatesOnMiss(state, player),
         isFreeBall: false,
         currentColor: state.currentColor ? state.currentColor : null,
         scoreRemaining: state.scoreRemaining - 8
@@ -121,6 +122,8 @@ const matchReducer = (state, action) => {
       return {
         ...state,
         isPlayerOneTurn: !state.isPlayerOneTurn,
+        isRedNext: state.currentColor ? false : true,
+        currentBreak: 0,
         scoreRemaining: state.isRedNext
           ? state.scoreRemaining
           : state.scoreRemaining - 7
@@ -131,6 +134,7 @@ const matchReducer = (state, action) => {
       return {
         ...state,
         isPlayerOneTurn: !state.isPlayerOneTurn,
+        isRedNext: state.currentColor ? false : true,
         scoreRemaining: state.scoreRemaining - 8,
         isFreeBall: false,
         currentColor: state.currentColor ? state.currentColor : null
@@ -141,7 +145,7 @@ const matchReducer = (state, action) => {
       const player = action.payload;
 
       return {
-        ...updateMatchInfoOnFoul(state, player),
+        ...updatesOnFoul(state, player),
         currentColor: state.currentColor
           ? state.currentColor
           : state.redsRemaining === 0
@@ -157,7 +161,7 @@ const matchReducer = (state, action) => {
       const player = action.payload;
 
       return {
-        ...updateMatchInfoOnFoul(state, player),
+        ...updatesOnFoul(state, player),
         scoreRemaining: state.scoreRemaining - 8,
         isFreeBall: false,
         currentColor: state.currentColor ? state.currentColor : null

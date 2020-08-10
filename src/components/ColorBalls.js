@@ -7,6 +7,7 @@ const ColorBalls = props => {
   const {
     handlePot,
     handleMiss,
+    handleSafety,
     handleFoul,
     currentColor,
     frameWinner
@@ -33,7 +34,7 @@ const ColorBalls = props => {
       <Ball
         text='safety'
         frameWinner={frameWinner}
-        handleClick={handleMiss}
+        handleClick={handleSafety}
         currentColor={currentColor}
       />
       <Ball

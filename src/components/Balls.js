@@ -129,7 +129,6 @@ const Balls = props => {
     const getCurrentColorScore = () => {
       return balls.find(ball => ball.color === currentColor).score;
     };
-    console.log(currentColor, getCurrentColorScore());
     const freeBallPoint = currentColor ? getCurrentColorScore() : 1;
     return (
       <>
@@ -194,6 +193,7 @@ const Balls = props => {
       <ColorBalls
         handlePot={handlePot}
         handleFoul={handleFoul}
+        handleSafety={handleSafety}
         handleMiss={handleMiss}
         frameWinner={frameWinner}
         currentColor={currentColor}

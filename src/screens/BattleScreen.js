@@ -13,6 +13,7 @@ import Balls from "../components/Balls";
 
 const initialMatchInfo = {
   playerOne: {
+    name: null,
     attempt: 0,
     ballsPotted: 0,
     highestBreak: 0,
@@ -20,12 +21,14 @@ const initialMatchInfo = {
     frame: 0
   },
   playerTwo: {
+    name: null,
     attempt: 0,
     ballsPotted: 0,
     highestBreak: 0,
     score: 0,
     frame: 0
   },
+  instruction: null,
   foulOption: null,
   isFreeBall: false,
   frame: 1,
@@ -61,72 +64,58 @@ const BattleScreen = props => {
   }, []);
 
   const handlePot = score => {
+    //No reds on the table
     if (matchInfo.currentColor !== null) {
       const nextColorBall = balls[score - 1];
-      if (matchInfo.isPlayerOneTurn) {
-        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerOne);
-        dispatch({
-          type: "POT_COLOR",
-          payload: {
-            player: "playerOne",
-            score,
-            isUpdateHighestBreak,
-            nextColor:
-              typeof nextColorBall !== "undefined"
-                ? nextColorBall.color
-                : "game-over"
-          }
-        });
-      } else {
-        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerTwo);
-        dispatch({
-          type: "POT_COLOR",
-          payload: {
-            player: "playerTwo",
-            score,
-            isUpdateHighestBreak,
-            nextColor:
-              typeof nextColorBall !== "undefined"
-                ? nextColorBall.color
-                : "game-over"
-          }
-        });
-      }
+
+      //update score
+      const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
+      const isUpdateHighestBreak = compareBreak(score, matchInfo[player]);
+      dispatch({
+        type: "POT_COLOR",
+        payload: {
+          player,
+          score,
+          isUpdateHighestBreak,
+          nextColor:
+            typeof nextColorBall !== "undefined"
+              ? nextColorBall.color
+              : "game-over"
+        }
+      });
+
       if (matchInfo.currentColor === "black") {
         //last ball potted
-        const winner = determineWinner(
-          matchInfo.playerOne.score,
-          matchInfo.playerTwo.score,
-          matchInfo.playerOneName,
-          matchInfo.playerTwoName
-        );
-        if (winner === null) return dispatch({ type: "DRAW" });
-
-        //match not over
-        if (matchInfo.frame !== frameNum)
-          return dispatch({ type: "FRAME_OVER", payload: winner });
-
-        //match over
-        const matchWinner = determineMatchWinner(winner);
-        if (!matchWinner) return dispatch({ type: "MATCH_DRAW" });
-        return dispatch({ type: "MATCH_WINNER", payload: matchWinner });
+        handleEndFrame();
       }
     } else {
-      if (matchInfo.isPlayerOneTurn) {
-        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerOne);
+      const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
+      const isUpdateHighestBreak = compareBreak(score, matchInfo[player]);
 
-        dispatch({
-          type: "POT",
-          payload: { score, isUpdateHighestBreak, player: "playerOne" }
-        });
-      } else {
-        const isUpdateHighestBreak = compareBreak(score, matchInfo.playerTwo);
-        dispatch({
-          type: "POT",
-          payload: { score, isUpdateHighestBreak, player: "playerTwo" }
-        });
-      }
+      dispatch({
+        type: "POT",
+        payload: { score, isUpdateHighestBreak, player }
+      });
     }
+  };
+
+  const handleEndFrame = () => {
+    const winner = determineWinner(
+      matchInfo.playerOne.score,
+      matchInfo.playerTwo.score,
+      matchInfo.playerOneName,
+      matchInfo.playerTwoName
+    );
+    if (winner === null) return dispatch({ type: "DRAW" });
+
+    //match not over
+    if (matchInfo.frame !== frameNum)
+      return dispatch({ type: "FRAME_OVER", payload: winner });
+
+    //match over
+    const matchWinner = determineMatchWinner(winner);
+    if (!matchWinner) return dispatch({ type: "MATCH_DRAW" });
+    return dispatch({ type: "MATCH_WINNER", payload: matchWinner });
   };
 
   const handleMiss = () => {
@@ -138,8 +127,12 @@ const BattleScreen = props => {
   };
 
   const handleFoul = () => {
-    const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
-    dispatch({ type: "FOUL", payload: player });
+    if (matchInfo.currentColor === "black") {
+      handleEndFrame();
+    } else {
+      const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
+      dispatch({ type: "FOUL", payload: player });
+    }
   };
 
   const updateFoulPoint = foulPoint => {
@@ -240,7 +233,7 @@ const BattleScreen = props => {
 
       <Text>{matchInfo.redsRemaining}</Text>
       <Text>winner: {matchInfo.matchWinner}</Text>
-      <BigText text='hello' />
+      <BigText instruction={matchInfo.instruction} />
       {matchInfo.frameWinner && !matchInfo.matchWinner && (
         <TouchableOpacity onPress={startNewFrame}>
           <Text>New Frame</Text>
