@@ -233,6 +233,7 @@ const BattleScreen = props => {
 
   return (
     <View>
+      <Text>Color on: {matchInfo.currentColor}</Text>
       <Text>player one highest break: {matchInfo.playerOne.highestBreak}</Text>
       <Text>player two highest break: {matchInfo.playerTwo.highestBreak}</Text>
       <Text>{matchInfo.playerOne.attempt}</Text>

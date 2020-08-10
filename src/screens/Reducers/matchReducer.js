@@ -9,8 +9,9 @@ const updateMatchInfo = (state, score) => {
 
     isRedNext: state.redsRemaining === 0 ? false : !state.isRedNext,
 
-    scoreRemaining:
-      score === 1 ? state.scoreRemaining - 8 : state.scoreRemaining,
+    scoreRemaining: state.isRedNext
+      ? state.scoreRemaining - 1
+      : state.scoreRemaining - 7,
 
     currentColor: state.redsRemaining === 0 ? "yellow" : null
   };
@@ -77,7 +78,10 @@ const matchReducer = (state, action) => {
       const player = action.payload;
       return {
         ...updateMatchInfoOnMiss(state, player),
-        currentColor: state.redsRemaining === 0 ? "yellow" : null
+        currentColor: state.redsRemaining === 0 ? "yellow" : null,
+        scoreRemaining: state.isRedNext
+          ? state.scoreRemaining
+          : state.scoreRemaining - 7
       };
     }
 
@@ -116,7 +120,10 @@ const matchReducer = (state, action) => {
     case "SAFETY": {
       return {
         ...state,
-        isPlayerOneTurn: !state.isPlayerOneTurn
+        isPlayerOneTurn: !state.isPlayerOneTurn,
+        scoreRemaining: state.isRedNext
+          ? state.scoreRemaining
+          : state.scoreRemaining - 7
       };
     }
 
@@ -135,7 +142,14 @@ const matchReducer = (state, action) => {
 
       return {
         ...updateMatchInfoOnFoul(state, player),
-        currentColor: state.redsRemaining === 0 ? "yellow" : null
+        currentColor: state.currentColor
+          ? state.currentColor
+          : state.redsRemaining === 0
+          ? "yellow"
+          : null,
+        scoreRemaining: state.isRedNext
+          ? state.scoreRemaining
+          : state.scoreRemaining - 7
       };
     }
 
@@ -233,7 +247,7 @@ const matchReducer = (state, action) => {
         foulOption: null,
         currentBreak: state.currentBreak + score,
         isRedNext: false,
-        scoreRemaining: state.scoreRemaining - 8,
+        scoreRemaining: state.scoreRemaining - 1,
         currentColor: state.currentColor ? state.currentColor : null,
         isFreeBall: false
       };

@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import Ball from "./Ball";
 import ColorBalls from "./ColorBalls";
+import balls from "../resources/ballInfo";
 
 const Balls = props => {
   const {
@@ -125,6 +126,11 @@ const Balls = props => {
       }
     }
   } else if (isFreeBall) {
+    const getCurrentColorScore = () => {
+      return balls.find(ball => ball.color === currentColor).score;
+    };
+    console.log(currentColor, getCurrentColorScore());
+    const freeBallPoint = currentColor ? getCurrentColorScore() : 1;
     return (
       <>
         <Ball
@@ -135,7 +141,7 @@ const Balls = props => {
         />
         <Ball
           text='Potted free ball'
-          score={1}
+          score={freeBallPoint}
           frameWinner={frameWinner}
           handleClick={handleFreeBallPot}
           currentColor={currentColor}
