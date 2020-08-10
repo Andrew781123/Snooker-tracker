@@ -69,8 +69,7 @@ const matchReducer = (state, action) => {
           highestBreak: isUpdateHighestBreak
             ? state.currentBreak + score
             : state[player].highestBreak
-        },
-        isFreeBall: state.isFreeBall ? false : true
+        }
       };
     }
 
@@ -88,7 +87,8 @@ const matchReducer = (state, action) => {
       return {
         ...updateMatchInfoOnMiss(state, player),
         isFreeBall: false,
-        currentColor: state.currentColor ? state.currentColor : null
+        currentColor: state.currentColor ? state.currentColor : null,
+        scoreRemaining: state.scoreRemaining - 8
       };
     }
 
@@ -191,9 +191,7 @@ const matchReducer = (state, action) => {
     case "PLAYES_ON": {
       return {
         ...state,
-        foulOption: "FREE_BALL",
-        isPlayerOneTurn: !state.isPlayerOneTurn,
-        currentBreak: 0
+        foulOption: "DETERMINE_FREE_BALL"
       };
     }
 
@@ -202,7 +200,6 @@ const matchReducer = (state, action) => {
         ...state,
         isPlayerOneTurn: !state.isPlayerOneTurn,
         foulOption: null,
-        isRedNext: true,
         currentBreak: 0,
         scoreRemaining: state.scoreRemaining + 8,
         isFreeBall: true
@@ -237,7 +234,8 @@ const matchReducer = (state, action) => {
         currentBreak: state.currentBreak + score,
         isRedNext: false,
         scoreRemaining: state.scoreRemaining - 8,
-        currentColor: state.currentColor ? state.currentColor : null
+        currentColor: state.currentColor ? state.currentColor : null,
+        isFreeBall: false
       };
     }
 

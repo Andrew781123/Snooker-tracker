@@ -6,6 +6,7 @@ import ColorBalls from "./ColorBalls";
 const Balls = props => {
   const {
     isRedNext,
+    isFreeBall,
     foulOption,
     frameWinner,
     currentColor,
@@ -122,39 +123,37 @@ const Balls = props => {
           </>
         );
       }
-
-      case "FREE_BALL": {
-        return (
-          <>
-            <Ball
-              text='foul'
-              frameWinner={frameWinner}
-              handleClick={handleFreeBallFoul}
-              currentColor={currentColor}
-            />
-            <Ball
-              text='Potted free ball'
-              score={1}
-              frameWinner={frameWinner}
-              handleClick={handleFreeBallPot}
-              currentColor={currentColor}
-            />
-            <Ball
-              text='safety'
-              frameWinner={frameWinner}
-              handleClick={handleFreeBallSafety}
-              currentColor={currentColor}
-            />
-            <Ball
-              text='miss'
-              frameWinner={frameWinner}
-              handleClick={handleFreeBallMiss}
-              currentColor={currentColor}
-            />
-          </>
-        );
-      }
     }
+  } else if (isFreeBall) {
+    return (
+      <>
+        <Ball
+          text='foul'
+          frameWinner={frameWinner}
+          handleClick={handleFreeBallFoul}
+          currentColor={currentColor}
+        />
+        <Ball
+          text='Potted free ball'
+          score={1}
+          frameWinner={frameWinner}
+          handleClick={handleFreeBallPot}
+          currentColor={currentColor}
+        />
+        <Ball
+          text='safety'
+          frameWinner={frameWinner}
+          handleClick={handleFreeBallSafety}
+          currentColor={currentColor}
+        />
+        <Ball
+          text='miss'
+          frameWinner={frameWinner}
+          handleClick={handleFreeBallMiss}
+          currentColor={currentColor}
+        />
+      </>
+    );
   } else if (isRedNext)
     return (
       <>

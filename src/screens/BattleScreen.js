@@ -251,6 +251,7 @@ const BattleScreen = props => {
       <View style={styles.balls}>
         <Balls
           isRedNext={matchInfo.isRedNext}
+          isFreeBall={matchInfo.isFreeBall}
           foulOption={matchInfo.foulOption}
           frameWinner={matchInfo.frameWinner}
           currentColor={matchInfo.currentColor}
