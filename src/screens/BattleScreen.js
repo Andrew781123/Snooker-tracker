@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
-import Ball from "../components/Ball";
+import React, { useEffect, useReducer, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Button } from "react-native-elements";
 import ScoreBoard from "../components/ScoreBoard";
-import ColorBalls from "../components/ColorBalls";
 import matchReducer from "./Reducers/matchReducer";
 import ScoresRemaining from "../components/ScoresRemaining";
 import balls from "../resources/ballInfo";
@@ -10,6 +9,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import BigText from "../components/BigText";
 import Break from "../components/Break";
 import Balls from "../components/Balls";
+import StatsModal from "../components/StatsModal";
 
 const initialMatchInfo = {
   playerOne: {
@@ -55,6 +55,8 @@ const BattleScreen = props => {
   } = route.params;
 
   const [matchInfo, dispatch] = useReducer(matchReducer, initialMatchInfo);
+
+  const [isShowStatsModal, setIsShowStatsModal] = useState(false);
 
   useEffect(() => {
     dispatch({
@@ -293,6 +295,13 @@ const BattleScreen = props => {
         title='End'
         onPress={() => navigation.navigate("Battle_Result")}
       />
+      <StatsModal
+        playerOne={matchInfo.playerOne}
+        playerTwo={matchInfo.playerTwo}
+        isShow={isShowStatsModal}
+        setIsShow={setIsShowStatsModal}
+      />
+      <Button title='Show Stats' onPress={() => setIsShowStatsModal(true)} />
     </View>
   );
 };
