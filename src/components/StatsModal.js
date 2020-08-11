@@ -10,15 +10,25 @@ const StatsModal = props => {
     name: name1,
     attempt: attempt1,
     ballsPotted: ballsPotted1,
-    highestBreak: highestBreak1
+    pointsScored: pointsScored1,
+    highestBreak: highestBreak1,
+    centuries: centuries1,
+    fouls: fouls1,
+    foulPointsConceded: foulPointsConceded1
   } = playerOne;
 
   const {
     name: name2,
     attempt: attempt2,
     ballsPotted: ballsPotted2,
-    highestBreak: highestBreak2
+    pointsScored: pointsScored2,
+    highestBreak: highestBreak2,
+    centuries: centuries2,
+    fouls: fouls2,
+    foulPointsConceded: foulPointsConceded2
   } = playerTwo;
+
+  // console.log(pointsScored1);
 
   const handleModalClose = () => {
     setIsShow(false);
@@ -56,26 +66,26 @@ const StatsModal = props => {
             category='Highest break'
           />
           <MatchStatsItem
-            playerOneData={ballsPotted1}
-            playerTwoData={ballsPotted2}
-            category='Balls potted'
+            playerOneData={pointsScored1}
+            playerTwoData={pointsScored2}
+            category='Points scored'
           />
           <MatchStatsItem
-            playerOneData={ballsPotted1}
-            playerTwoData={ballsPotted2}
-            category='Balls potted'
+            playerOneData={centuries1}
+            playerTwoData={centuries2}
+            category='Centuries'
           />
           <MatchStatsItem
-            playerOneData={ballsPotted1}
-            playerTwoData={ballsPotted2}
-            category='Balls potted'
+            playerOneData={fouls1}
+            playerTwoData={fouls2}
+            category='Fouls'
           />
           <MatchStatsItem
-            playerOneData={ballsPotted1}
-            playerTwoData={ballsPotted2}
-            category='Balls potted'
+            playerOneData={foulPointsConceded1}
+            playerTwoData={foulPointsConceded2}
+            category='Foul points conceded'
           />
-          <Button title='Close' />
+          <Button title='Close' onPress={handleModalClose} />
         </View>
       </View>
     </Modal>
@@ -104,8 +114,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 20,
     backgroundColor: "white",
-    width: "80%",
-    padding: 20,
+    width: "90%",
+    padding: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

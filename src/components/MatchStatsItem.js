@@ -6,9 +6,9 @@ const MatchStatsItem = props => {
 
   return (
     <View style={styles.statsItemContainer}>
-      <Text>{playerOneData}</Text>
+      <Text style={styles.dataTextLeft}>{playerOneData}</Text>
       <Text style={styles.categoryText}>{category}</Text>
-      <Text>{playerTwoData}</Text>
+      <Text style={styles.dataTextRight}>{playerTwoData}</Text>
     </View>
   );
 };
@@ -26,5 +26,13 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     width: "50%",
     textAlign: "center"
+  },
+  dataTextLeft: {
+    position: "absolute",
+    left: 0
+  },
+  dataTextRight: {
+    position: "absolute",
+    right: 0
   }
 });

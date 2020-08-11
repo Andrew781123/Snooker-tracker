@@ -1,19 +1,27 @@
-const updatesOnPot = (state, score) => {
+const updatesOnPot = (state, player, score, isUpdateHighestBreak) => {
   return {
     ...state,
+    [player]: {
+      ...state[player],
+      score: state[player].score + score,
+      attempt: state[player].attempt + 1,
+      ballsPotted: state[player].ballsPotted + 1,
+      pointsScored: state[player].pointsScored + score,
+      highestBreak: isUpdateHighestBreak
+        ? state.currentBreak + score
+        : state[player].highestBreak,
+      centuries:
+        state.currentBreak + score >= 100
+          ? state[player].centuries + 1
+          : state[player].centuries
+    },
     currentBreak: state.currentBreak + score,
 
     redsRemaining: state.isRedNext
       ? state.redsRemaining - 1
       : state.redsRemaining,
 
-    isRedNext: state.redsRemaining === 0 ? false : !state.isRedNext,
-
-    scoreRemaining: state.isRedNext
-      ? state.scoreRemaining - 1
-      : state.scoreRemaining - 7,
-
-    currentColor: state.redsRemaining === 0 ? "yellow" : null
+    isRedNext: state.redsRemaining === 0 ? false : !state.isRedNext
   };
 };
 
@@ -35,7 +43,8 @@ const updatesOnFoul = (state, player) => {
     ...state,
     [player]: {
       ...state[player],
-      attempt: state[player].attempt + 1
+      attempt: state[player].attempt + 1,
+      fouls: state[player].fouls + 1
     },
     foulOption: "GET_FOUL_POINTS"
   };
@@ -61,17 +70,13 @@ const matchReducer = (state, action) => {
     case "POT": {
       const { score, isUpdateHighestBreak, player } = action.payload;
       return {
-        ...updatesOnPot(state, score),
+        ...updatesOnPot(state, player, score, isUpdateHighestBreak),
         instruction: `${player.name}'s turn`,
-        [player]: {
-          ...state[player],
-          score: state[player].score + score,
-          attempt: state[player].attempt + 1,
-          ballsPotted: state[player].ballsPotted + 1,
-          highestBreak: isUpdateHighestBreak
-            ? state.currentBreak + score
-            : state[player].highestBreak
-        }
+        scoreRemaining: state.isRedNext
+          ? state.scoreRemaining - 1
+          : state.scoreRemaining - 7,
+
+        currentColor: state.redsRemaining === 0 ? "yellow" : null
       };
     }
 
@@ -100,20 +105,8 @@ const matchReducer = (state, action) => {
     case "POT_COLOR": {
       const { player, score, isUpdateHighestBreak, nextColor } = action.payload;
       return {
-        ...state,
+        ...updatesOnPot(state, player, score, isUpdateHighestBreak),
         scoreRemaining: state.scoreRemaining - score,
-        [player]: {
-          ...state[player],
-          score: state[player].score + score,
-          attempt: state[player].attempt + 1,
-          ballsPotted: state[player].ballsPotted + 1,
-          highestBreak: isUpdateHighestBreak
-            ? state.currentBreak + score
-            : state[player].highestBreak
-        },
-
-        currentBreak: state.currentBreak + score,
-
         currentColor: nextColor
       };
     }
@@ -169,14 +162,20 @@ const matchReducer = (state, action) => {
     }
 
     case "UPDATE_FOUL_POINT": {
-      const { player, foulPoint } = action.payload;
+      const { player, playerFouling, foulPoint } = action.payload;
 
       return {
         ...state,
         foulOption: "GET_NUMBERS_OF_REDS_POTTED",
         [player]: {
           ...state[player],
-          score: state[player].score + foulPoint
+          score: state[player].score + foulPoint,
+          pointsScored: state[player].pointsScored + foulPoint
+        },
+        [playerFouling]: {
+          ...state[playerFouling],
+          foulPointsConceded:
+            state[playerFouling].foulPointsConceded + foulPoint
         }
       };
     }
@@ -315,7 +314,6 @@ const matchReducer = (state, action) => {
     }
 
     case "MATCH_DRAW": {
-      console.log("draw match");
       return {
         ...state,
         isPlayerOneTurn: null

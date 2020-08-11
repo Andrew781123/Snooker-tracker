@@ -11,23 +11,22 @@ import Break from "../components/Break";
 import Balls from "../components/Balls";
 import StatsModal from "../components/StatsModal";
 
+const initialPlayerInfo = {
+  name: null,
+  attempt: 0,
+  ballsPotted: 0,
+  pointsScored: 0,
+  centuries: 0,
+  highestBreak: 0,
+  fouls: 0,
+  foulPointsConceded: 0,
+  score: 0,
+  frame: 0
+};
+
 const initialMatchInfo = {
-  playerOne: {
-    name: null,
-    attempt: 0,
-    ballsPotted: 0,
-    highestBreak: 0,
-    score: 0,
-    frame: 0
-  },
-  playerTwo: {
-    name: null,
-    attempt: 0,
-    ballsPotted: 0,
-    highestBreak: 0,
-    score: 0,
-    frame: 0
-  },
+  playerOne: initialPlayerInfo,
+  playerTwo: initialPlayerInfo,
   instruction: null,
   foulOption: null,
   isFreeBall: false,
@@ -132,14 +131,25 @@ const BattleScreen = props => {
     if (matchInfo.currentColor === "black") {
       handleEndFrame();
     } else {
-      const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
+      const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
       dispatch({ type: "FOUL", payload: player });
     }
   };
 
   const updateFoulPoint = foulPoint => {
-    const player = matchInfo.isPlayerOneTurn ? "playerTwo" : "playerOne";
-    dispatch({ type: "UPDATE_FOUL_POINT", payload: { player, foulPoint } });
+    let player, playerFouling;
+    if (matchInfo.isPlayerOneTurn) {
+      player = "playerTwo";
+      playerFouling = "playerOne";
+    } else {
+      player = "playerOne";
+      playerFouling = "playerTwo";
+    }
+
+    dispatch({
+      type: "UPDATE_FOUL_POINT",
+      payload: { player, playerFouling, foulPoint }
+    });
   };
 
   const removeReds = redNum => {
