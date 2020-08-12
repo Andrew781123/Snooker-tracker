@@ -250,13 +250,8 @@ const BattleScreen = props => {
 
   return (
     <View>
-      <Text>Color on: {matchInfo.currentColor}</Text>
-      <Text>player one highest break: {matchInfo.playerOne.highestBreak}</Text>
-      <Text>player two highest break: {matchInfo.playerTwo.highestBreak}</Text>
-      <Text>{matchInfo.playerOne.attempt}</Text>
-
       <Text>{matchInfo.redsRemaining}</Text>
-      <Text>winner: {matchInfo.matchWinner}</Text>
+      <Text>Match winner: {matchInfo.matchWinner}</Text>
       <BigText instruction={matchInfo.instruction} />
       {matchInfo.frameWinner && !matchInfo.matchWinner && (
         <TouchableOpacity onPress={startNewFrame}>
@@ -275,6 +270,7 @@ const BattleScreen = props => {
           isFreeBall={matchInfo.isFreeBall}
           frameWinner={matchInfo.frameWinner}
           currentColor={matchInfo.currentColor}
+          redsRemaining={matchInfo.redsRemaining}
           handlePot={handlePot}
           nonPotActionHandler={{ handleFoul, handleSafety, handleMiss }}
           foulOption={matchInfo.foulOption}

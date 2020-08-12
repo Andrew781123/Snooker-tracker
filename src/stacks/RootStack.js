@@ -14,11 +14,6 @@ const RootStack = () => {
   const { authState } = useContext(authContext);
   const { token, loadingToken, authLoading, user } = authState;
 
-  useEffect(() => {
-    console.log(
-      `loading token: ${loadingToken}, loading user:  ${authLoading}`
-    );
-  }, [loadingToken, authLoading]);
   if (loadingToken || authLoading) {
     return <InitialLoadingScreen />;
   } else {

@@ -45,6 +45,7 @@ const ActionButtons = props => {
             frameWinner={frameWinner}
             isFreeBall={isFreeBall}
             currentColor={currentColor}
+            redsRemaining={redsRemaining}
             {...nonPotActionHandler}
             {...freeBallNonPotHandlers}
           />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Ball from "../Ball";
 import HorizontalFlexBox from "./HorizontalFlexBox";
@@ -9,7 +9,6 @@ const NonActionBalls = props => {
     redsRemaining,
     currentColor,
     foulOption,
-    foulOptionHandlers,
     updateFoulPoint,
     removeReds,
     handlePlaysOn,
