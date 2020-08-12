@@ -8,6 +8,7 @@ const ActionButtons = props => {
   const {
     isRedNext,
     isFreeBall,
+    freeBallPoint,
     foulOption,
     frameWinner,
     currentColor,
@@ -39,6 +40,7 @@ const ActionButtons = props => {
               handlePot={handlePot}
               currentColor={currentColor}
               frameWinner={frameWinner}
+              freeBallPoint={freeBallPoint}
             />
           </View>
           <NonPotActionBalls

@@ -236,7 +236,8 @@ const matchReducer = (state, action) => {
         currentBreak: 0,
         isRedNext: state.redsRemaining <= 0 ? false : state.isRedNext,
         scoreRemaining: state.scoreRemaining + freeBallPoint + 7,
-        isFreeBall: true
+        isFreeBall: true,
+        freeBallPoint
       };
     }
 

@@ -29,6 +29,7 @@ const initialMatchInfo = {
   playerTwo: initialPlayerInfo,
   instruction: null,
   foulOption: null,
+  freeBallPoint: 1,
   isFreeBall: false,
   frame: 1,
   framesInfo: [],
@@ -262,7 +263,7 @@ const BattleScreen = props => {
         <Text>{playerToBreakOff} break off</Text>
       </View>
       <View
-        style={styles.balls}
+        style={styles.actionButtonsContainer}
         pointerEvents={matchInfo.frameWinner ? "none" : "auto"}
       >
         <ActionButtons
@@ -289,6 +290,7 @@ const BattleScreen = props => {
             handleFreeBallFoul,
             handleFreeBallSafety
           }}
+          freeBallPoint={matchInfo.freeBallPoint}
         />
       </View>
 
@@ -334,9 +336,11 @@ const BattleScreen = props => {
 export default BattleScreen;
 
 const styles = StyleSheet.create({
-  balls: {
+  actionButtonsContainer: {
     width: "100%",
-    marginTop: 10
+    marginTop: 10,
+    height: 130,
+    justifyContent: "center"
   }
 });
 

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Ball from "../Ball";
 import HorizontalFlexBox from "./HorizontalFlexBox";
+import balls from "../../resources/ballInfo";
 
 const NonActionBalls = props => {
   const {

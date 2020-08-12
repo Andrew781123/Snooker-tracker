@@ -12,12 +12,11 @@ const PotActionBalls = props => {
     currentColor,
     frameWinner,
     handleFreeBallPot,
-    isFreeBall
+    isFreeBall,
+    freeBallPoint
   } = props;
 
   if (isFreeBall) {
-    const freeBallPoint = currentColor ? getCurrentColorScore(currentColor) : 1;
-
     return (
       <HorizontalFlexBox justifyContent='center'>
         <Ball
