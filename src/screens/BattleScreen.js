@@ -174,8 +174,8 @@ const BattleScreen = props => {
     dispatch({ type: "PUT_BACK" });
   };
 
-  const handleFreeBall = () => {
-    dispatch({ type: "FREE_BALL" });
+  const handleFreeBall = freeBallPoint => {
+    dispatch({ type: "FREE_BALL", payload: freeBallPoint });
   };
 
   const handleNonFreeBall = () => {

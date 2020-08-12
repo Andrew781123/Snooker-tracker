@@ -88,10 +88,15 @@ const NonActionBalls = props => {
       }
 
       case "DETERMINE_FREE_BALL": {
+        const freeBallPoint = currentColor
+          ? getCurrentColorScore(currentColor)
+          : 1;
+
         return (
           <HorizontalFlexBox justifyContent='space-around'>
             <Ball
               text='Yes'
+              score={freeBallPoint}
               frameWinner={frameWinner}
               handleClick={handleFreeBall}
               currentColor={currentColor}
@@ -114,3 +119,7 @@ const NonActionBalls = props => {
 export default NonActionBalls;
 
 const styles = StyleSheet.create({});
+
+const getCurrentColorScore = currentColor => {
+  return balls.find(ball => ball.color === currentColor).score;
+};
