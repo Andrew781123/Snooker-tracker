@@ -2,25 +2,13 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import balls from "../resources/ballInfo";
 import Ball from "./Ball";
+import SpaceAroundView from "./match/SpaceAroundView";
 
 const ColorBalls = props => {
-  const {
-    handlePot,
-    handleMiss,
-    handleSafety,
-    handleFoul,
-    currentColor,
-    frameWinner
-  } = props;
+  const { handlePot, currentColor, frameWinner } = props;
 
   return (
-    <View style={styles.balls}>
-      <Ball
-        text='foul'
-        handleClick={handleFoul}
-        frameWinner={frameWinner}
-        currentColor={currentColor}
-      />
+    <SpaceAroundView>
       {balls.map(ball => (
         <Ball
           key={ball.score}
@@ -31,28 +19,10 @@ const ColorBalls = props => {
           currentColor={currentColor}
         />
       ))}
-      <Ball
-        text='safety'
-        frameWinner={frameWinner}
-        handleClick={handleSafety}
-        currentColor={currentColor}
-      />
-      <Ball
-        text='miss'
-        frameWinner={frameWinner}
-        handleClick={handleMiss}
-        currentColor={currentColor}
-      />
-    </View>
+    </SpaceAroundView>
   );
 };
 
 export default ColorBalls;
 
-const styles = StyleSheet.create({
-  balls: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between"
-  }
-});
+const styles = StyleSheet.create({});

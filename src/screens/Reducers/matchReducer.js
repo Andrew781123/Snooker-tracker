@@ -19,9 +19,7 @@ const updatesOnPot = (state, player, score, isUpdateHighestBreak) => {
 
     redsRemaining: state.isRedNext
       ? state.redsRemaining - 1
-      : state.redsRemaining,
-
-    isRedNext: state.redsRemaining === 0 ? false : !state.isRedNext
+      : state.redsRemaining
   };
 };
 
@@ -33,7 +31,6 @@ const updatesOnMiss = (state, player) => {
       attempt: state[player].attempt + 1
     },
     currentBreak: 0,
-    isRedNext: state.currentColor ? false : true,
     isPlayerOneTurn: !state.isPlayerOneTurn
   };
 };
@@ -51,10 +48,10 @@ const updatesOnFoul = (state, player) => {
 };
 
 const matchReducer = (state, action) => {
-  const { playerToBreakOff, playerOneName, playerTwoName } = action.payload;
-
   switch (action.type) {
     case "MATCH_INIT": {
+      const { playerToBreakOff, playerOneName, playerTwoName } = action.payload;
+
       return {
         ...state,
         instruction: `${playerOneName} breaks off`,
@@ -68,6 +65,7 @@ const matchReducer = (state, action) => {
     }
 
     case "POT": {
+      console.log("pot");
       const { score, isUpdateHighestBreak, player } = action.payload;
       return {
         ...updatesOnPot(state, player, score, isUpdateHighestBreak),
@@ -76,7 +74,8 @@ const matchReducer = (state, action) => {
           ? state.scoreRemaining - 1
           : state.scoreRemaining - 7,
 
-        currentColor: state.redsRemaining === 0 ? "yellow" : null
+        isRedNext: !state.isRedNext
+        // currentColor: state.redsRemaining === 0 ? "yellow" : null
       };
     }
 
@@ -85,9 +84,11 @@ const matchReducer = (state, action) => {
       return {
         ...updatesOnMiss(state, player),
         currentColor: state.redsRemaining === 0 ? "yellow" : null,
-        scoreRemaining: state.isRedNext
-          ? state.scoreRemaining
-          : state.scoreRemaining - 7
+        isRedNext: state.currentColor ? false : true,
+        scoreRemaining:
+          state.isRedNext || state.currentColor
+            ? state.scoreRemaining
+            : state.scoreRemaining - 7
       };
     }
 
@@ -97,7 +98,13 @@ const matchReducer = (state, action) => {
       return {
         ...updatesOnMiss(state, player),
         isFreeBall: false,
-        currentColor: state.currentColor ? state.currentColor : null,
+        isRedNext:
+          state.currentColor || state.redsRemaining === 0 ? false : true,
+        currentColor: state.currentColor
+          ? state.currentColor
+          : state.redsRemaining === 0
+          ? "yellow"
+          : null,
         scoreRemaining: state.scoreRemaining - 8
       };
     }
@@ -127,10 +134,15 @@ const matchReducer = (state, action) => {
       return {
         ...state,
         isPlayerOneTurn: !state.isPlayerOneTurn,
-        isRedNext: state.currentColor ? false : true,
+        isRedNext:
+          state.currentColor || state.redsRemaining === 0 ? false : true,
         scoreRemaining: state.scoreRemaining - 8,
         isFreeBall: false,
-        currentColor: state.currentColor ? state.currentColor : null
+        currentColor: state.currentColor
+          ? state.currentColor
+          : state.redsRemaining === 0
+          ? "yellow"
+          : null
       };
     }
 
@@ -181,9 +193,12 @@ const matchReducer = (state, action) => {
     }
 
     case "REMOVE_REDS": {
+      const redNum = action.payload;
+
       return {
         ...state,
-        redsRemaining: state.redsRemaining - action.payload,
+        redsRemaining: state.redsRemaining - redNum,
+        scoreRemaining: state.scoreRemaining - 8 * redNum,
         foulOption: "FOUL_FOLLOWUP_ACTIONS"
       };
     }
@@ -193,7 +208,9 @@ const matchReducer = (state, action) => {
         ...state,
         foulOption: null,
         isRedNext: true,
-        currentBreak: 0
+        currentBreak: 0,
+        isRedNext: state.redsRemaining <= 0 ? false : state.isRedNext,
+        currentColor: state.redsRemaining <= 0 ? "yellow" : null
       };
     }
 
@@ -201,11 +218,13 @@ const matchReducer = (state, action) => {
       return {
         ...state,
         foulOption: null,
-        currentBreak: 0
+        currentBreak: 0,
+        isRedNext: state.redsRemaining <= 0 ? false : state.isRedNext,
+        currentColor: state.redsRemaining <= 0 ? "yellow" : null
       };
     }
 
-    case "PLAYES_ON": {
+    case "PLAYS_ON": {
       return {
         ...state,
         foulOption: "DETERMINE_FREE_BALL"
@@ -218,6 +237,8 @@ const matchReducer = (state, action) => {
         isPlayerOneTurn: !state.isPlayerOneTurn,
         foulOption: null,
         currentBreak: 0,
+        isRedNext: state.redsRemaining <= 0 ? false : state.isRedNext,
+        currentColor: state.redsRemaining <= 0 ? "yellow" : null,
         scoreRemaining: state.scoreRemaining + 8,
         isFreeBall: true
       };
@@ -253,6 +274,14 @@ const matchReducer = (state, action) => {
         scoreRemaining: state.scoreRemaining - 1,
         currentColor: state.currentColor ? state.currentColor : null,
         isFreeBall: false
+      };
+    }
+
+    case "SET_YELLOW_COLOR": {
+      return {
+        ...state,
+        currentColor: "yellow",
+        isRedNext: false
       };
     }
 

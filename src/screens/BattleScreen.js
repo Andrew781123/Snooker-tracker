@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState, useLayoutEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-elements";
 import ScoreBoard from "../components/ScoreBoard";
@@ -10,6 +10,7 @@ import BigText from "../components/BigText";
 import Break from "../components/Break";
 import Balls from "../components/Balls";
 import StatsModal from "../components/StatsModal";
+import ActionButtons from "../components/match/ActionButtons";
 
 const initialPlayerInfo = {
   name: null,
@@ -63,6 +64,12 @@ const BattleScreen = props => {
       payload: { playerToBreakOff, playerOneName, playerTwoName }
     });
   }, []);
+
+  useLayoutEffect(() => {
+    if (matchInfo.redsRemaining === 0 && matchInfo.isRedNext) {
+      dispatch({ type: "SET_YELLOW_COLOR" });
+    }
+  }, [matchInfo.redsRemaining, matchInfo.isRedNext]);
 
   const handlePot = score => {
     //No reds on the table
@@ -173,7 +180,7 @@ const BattleScreen = props => {
   };
 
   const handlePlaysOn = () => {
-    dispatch({ type: "PLAYES_ON" });
+    dispatch({ type: "PLAYS_ON" });
   };
 
   const handleSafety = () => {
@@ -254,28 +261,33 @@ const BattleScreen = props => {
       <View>
         <Text>{playerToBreakOff} break off</Text>
       </View>
-      <View style={styles.balls}>
-        <Balls
+      <View
+        style={styles.balls}
+        pointerEvents={matchInfo.frameWinner ? "none" : "auto"}
+      >
+        <ActionButtons
           isRedNext={matchInfo.isRedNext}
           isFreeBall={matchInfo.isFreeBall}
-          foulOption={matchInfo.foulOption}
           frameWinner={matchInfo.frameWinner}
           currentColor={matchInfo.currentColor}
-          handleFoul={handleFoul}
           handlePot={handlePot}
-          handleSafety={handleSafety}
-          handleMiss={handleMiss}
-          updateFoulPoint={updateFoulPoint}
-          removeReds={removeReds}
-          handleForcedPlayOn={handleForcedPlayOn}
-          handlePutBack={handlePutBack}
-          handlePlaysOn={handlePlaysOn}
-          handleFreeBall={handleFreeBall}
-          handleNonFreeBall={handleNonFreeBall}
+          nonPotActionHandler={{ handleFoul, handleSafety, handleMiss }}
+          foulOption={matchInfo.foulOption}
+          foulOptionHandlers={{
+            updateFoulPoint,
+            removeReds,
+            handlePlaysOn,
+            handlePutBack,
+            handleForcedPlayOn,
+            handleFreeBall,
+            handleNonFreeBall
+          }}
           handleFreeBallPot={handleFreeBallPot}
-          handleFreeBallMiss={handleFreeBallMiss}
-          handleFreeBallFoul={handleFreeBallFoul}
-          handleFreeBallSafety={handleFreeBallSafety}
+          freeBallNonPotHandlers={{
+            handleFreeBallMiss,
+            handleFreeBallFoul,
+            handleFreeBallSafety
+          }}
         />
       </View>
 

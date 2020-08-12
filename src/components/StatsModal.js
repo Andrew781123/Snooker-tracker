@@ -28,8 +28,6 @@ const StatsModal = props => {
     foulPointsConceded: foulPointsConceded2
   } = playerTwo;
 
-  // console.log(pointsScored1);
-
   const handleModalClose = () => {
     setIsShow(false);
   };
@@ -94,7 +92,7 @@ const StatsModal = props => {
 
 const getFraction = (numerator, denominator) => {
   if (denominator === 0) return 0;
-  else return numerator / denominator;
+  else return (numerator / denominator).toFixed(2);
 };
 
 const convertToPercentage = fraction => {

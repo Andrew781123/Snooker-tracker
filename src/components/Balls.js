@@ -11,6 +11,7 @@ const Balls = props => {
     foulOption,
     frameWinner,
     currentColor,
+    redsRemaining,
     handleFoul,
     handlePot,
     handleSafety,
@@ -78,6 +79,7 @@ const Balls = props => {
               currentColor={currentColor}
             />
           );
+          if (i === redsRemaining) break;
         }
         return balls;
       }
@@ -126,10 +128,7 @@ const Balls = props => {
       }
     }
   } else if (isFreeBall) {
-    const getCurrentColorScore = () => {
-      return balls.find(ball => ball.color === currentColor).score;
-    };
-    const freeBallPoint = currentColor ? getCurrentColorScore() : 1;
+    const freeBallPoint = currentColor ? getCurrentColorScore(currentColor) : 1;
     return (
       <>
         <Ball
@@ -159,7 +158,8 @@ const Balls = props => {
         />
       </>
     );
-  } else if (isRedNext)
+  } else if (currentColor && currentColor !== "game-over") {
+    const currentColorScore = getCurrentColorScore(currentColor);
     return (
       <>
         <Ball
@@ -169,12 +169,35 @@ const Balls = props => {
           currentColor={currentColor}
         />
         <Ball
-          color='red'
-          score={1}
+          color={currentColor}
+          score={currentColorScore}
           frameWinner={frameWinner}
           handleClick={handlePot}
           currentColor={currentColor}
         />
+        <Ball
+          text='safety'
+          frameWinner={frameWinner}
+          handleClick={handleSafety}
+        />
+        <Ball
+          text='miss'
+          frameWinner={frameWinner}
+          handleClick={handleMiss}
+          currentColor={currentColor}
+        />
+      </>
+    );
+  } else if (isRedNext)
+    return (
+      <>
+        <Ball
+          text='foul'
+          frameWinner={frameWinner}
+          handleClick={handleFoul}
+          currentColor={currentColor}
+        />
+
         <Ball
           text='safety'
           frameWinner={frameWinner}
@@ -199,6 +222,10 @@ const Balls = props => {
         currentColor={currentColor}
       />
     );
+};
+
+const getCurrentColorScore = currentColor => {
+  return balls.find(ball => ball.color === currentColor).score;
 };
 
 export default Balls;
