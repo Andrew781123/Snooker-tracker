@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Ball from "../Ball";
-import SpaceAroundView from "./SpaceAroundView";
+import HorizontalFlexBox from "./HorizontalFlexBox";
 
 const NonPotActionBalls = props => {
   const {
@@ -17,7 +17,7 @@ const NonPotActionBalls = props => {
   } = props;
 
   return (
-    <SpaceAroundView>
+    <HorizontalFlexBox justifyContent='space-around'>
       <Ball
         text='foul'
         frameWinner={frameWinner}
@@ -36,7 +36,7 @@ const NonPotActionBalls = props => {
         handleClick={isFreeBall ? handleFreeBallMiss : handleMiss}
         currentColor={currentColor}
       />
-    </SpaceAroundView>
+    </HorizontalFlexBox>
   );
 };
 

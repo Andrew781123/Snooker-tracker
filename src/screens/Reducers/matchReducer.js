@@ -337,8 +337,7 @@ const matchReducer = (state, action) => {
 
       return {
         ...state,
-        matchWinner,
-        isPlayerOneTurn: null
+        matchWinner
       };
     }
 

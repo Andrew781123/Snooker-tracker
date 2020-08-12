@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Ball from "../Ball";
-import SpaceAroundView from "./SpaceAroundView";
+import HorizontalFlexBox from "./HorizontalFlexBox";
 
 const NonActionBalls = props => {
   const {
@@ -35,7 +35,11 @@ const NonActionBalls = props => {
             />
           );
         }
-        return <SpaceAroundView>{balls}</SpaceAroundView>;
+        return (
+          <HorizontalFlexBox justifyContent='space-around'>
+            {balls}
+          </HorizontalFlexBox>
+        );
       }
       case "GET_NUMBERS_OF_REDS_POTTED": {
         // score is number of reds here
@@ -53,11 +57,15 @@ const NonActionBalls = props => {
           );
           if (i === redsRemaining) break;
         }
-        return <SpaceAroundView>{balls}</SpaceAroundView>;
+        return (
+          <HorizontalFlexBox justifyContent='space-around'>
+            {balls}
+          </HorizontalFlexBox>
+        );
       }
       case "FOUL_FOLLOWUP_ACTIONS": {
         return (
-          <SpaceAroundView>
+          <HorizontalFlexBox justifyContent='space-around'>
             <Ball
               text='Play on'
               frameWinner={frameWinner}
@@ -76,13 +84,13 @@ const NonActionBalls = props => {
               handleClick={handleForcedPlayOn}
               currentColor={currentColor}
             />
-          </SpaceAroundView>
+          </HorizontalFlexBox>
         );
       }
 
       case "DETERMINE_FREE_BALL": {
         return (
-          <SpaceAroundView>
+          <HorizontalFlexBox justifyContent='space-around'>
             <Ball
               text='Yes'
               frameWinner={frameWinner}
@@ -95,7 +103,7 @@ const NonActionBalls = props => {
               handleClick={handleNonFreeBall}
               currentColor={currentColor}
             />
-          </SpaceAroundView>
+          </HorizontalFlexBox>
         );
       }
     }

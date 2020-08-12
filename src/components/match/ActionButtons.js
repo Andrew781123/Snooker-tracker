@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import NonPotActionBalls from "./NonPotActionBalls";
 import NonActionBalls from "./NonActionBalls";
 import PotActionBalls from "./PotActionBalls";
@@ -31,14 +31,16 @@ const ActionButtons = props => {
         />
       ) : (
         <>
-          <PotActionBalls
-            isRedNext={isRedNext}
-            isFreeBall={isFreeBall}
-            handleFreeBallPot={handleFreeBallPot}
-            handlePot={handlePot}
-            currentColor={currentColor}
-            frameWinner={frameWinner}
-          />
+          <View style={styles.potActionBallsContainer}>
+            <PotActionBalls
+              isRedNext={isRedNext}
+              isFreeBall={isFreeBall}
+              handleFreeBallPot={handleFreeBallPot}
+              handlePot={handlePot}
+              currentColor={currentColor}
+              frameWinner={frameWinner}
+            />
+          </View>
           <NonPotActionBalls
             frameWinner={frameWinner}
             isFreeBall={isFreeBall}
@@ -54,4 +56,8 @@ const ActionButtons = props => {
 
 export default ActionButtons;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  potActionBallsContainer: {
+    marginBottom: 10
+  }
+});

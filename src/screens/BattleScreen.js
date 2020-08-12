@@ -8,7 +8,6 @@ import balls from "../resources/ballInfo";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import BigText from "../components/BigText";
 import Break from "../components/Break";
-import Balls from "../components/Balls";
 import StatsModal from "../components/StatsModal";
 import ActionButtons from "../components/match/ActionButtons";
 
@@ -86,9 +85,7 @@ const BattleScreen = props => {
           score,
           isUpdateHighestBreak,
           nextColor:
-            typeof nextColorBall !== "undefined"
-              ? nextColorBall.color
-              : "game-over"
+            typeof nextColorBall !== "undefined" ? nextColorBall.color : "black"
         }
       });
 
@@ -111,18 +108,24 @@ const BattleScreen = props => {
     const winner = determineWinner(
       matchInfo.playerOne.score,
       matchInfo.playerTwo.score,
-      matchInfo.playerOneName,
-      matchInfo.playerTwoName
+      matchInfo.playerOne.name,
+      matchInfo.playerTwo.name
     );
-    if (winner === null) return dispatch({ type: "DRAW" });
+    if (winner === "DRAW") return dispatch({ type: "DRAW" });
 
     //match not over
-    if (matchInfo.frame !== frameNum)
-      return dispatch({ type: "FRAME_OVER", payload: winner });
+    dispatch({ type: "FRAME_OVER", payload: winner });
 
+    if (matchInfo.frame === frameNum) {
+      handleMatchOver();
+    }
+  };
+
+  const handleMatchOver = () => {
     //match over
     const matchWinner = determineMatchWinner(winner);
-    if (!matchWinner) return dispatch({ type: "MATCH_DRAW" });
+    if (matchWinner === "DRAW") return dispatch({ type: "MATCH_DRAW" });
+
     return dispatch({ type: "MATCH_WINNER", payload: matchWinner });
   };
 
@@ -212,7 +215,9 @@ const BattleScreen = props => {
 
   const startNewFrame = () => {
     const fieldToEdit =
-      matchInfo.frameWinner === playerOneName ? "playerOne" : "playerTwo";
+      matchInfo.frameWinner === matchInfo.playerOne.name
+        ? "playerOne"
+        : "playerTwo";
     dispatch({ type: "INCREMENT_FRAME", payload: fieldToEdit });
     dispatch({ type: "START_NEW_FRAME" });
   };
@@ -223,14 +228,14 @@ const BattleScreen = props => {
 
   const determineMatchWinner = winner => {
     const { p1Frame, p2Frame } = getFinalFrameScore(winner);
-    if (p1Frame > p2Frame) return playerOneName;
-    if (p1Frame < p2Frame) return playerTwoName;
-    return null;
+    if (p1Frame > p2Frame) return matchInfo.playerOne.name;
+    if (p1Frame < p2Frame) return matchInfo.playerTwo.name;
+    return "DRAW";
   };
 
   const getFinalFrameScore = winner => {
     let p1Frame, p2Frame;
-    if (winner === playerOneName) {
+    if (winner === matchInfo.playerOne.name) {
       p1Frame = matchInfo.playerOne.frame + 1;
       p2Frame = matchInfo.playerTwo.frame;
     } else {
@@ -296,8 +301,8 @@ const BattleScreen = props => {
         p2Score={matchInfo.playerTwo.score}
         p1Frame={matchInfo.playerOne.frame}
         p2Frame={matchInfo.playerTwo.frame}
-        playerOneName={playerOneName}
-        playerTwoName={playerTwoName}
+        playerOneName={matchInfo.playerOne.name}
+        playerTwoName={matchInfo.playerTwo.name}
         frameNum={frameNum}
         isPlayerOneTurn={matchInfo.isPlayerOneTurn}
       />
@@ -313,10 +318,12 @@ const BattleScreen = props => {
           isPlayerOneTurn={matchInfo.isPlayerOneTurn}
         />
       )}
-      <Button
-        title='End'
-        onPress={() => navigation.navigate("Battle_Result")}
-      />
+      {matchInfo.matchWinner && (
+        <Button
+          title='End'
+          onPress={() => navigation.navigate("Battle_Result")}
+        />
+      )}
       <StatsModal
         playerOne={matchInfo.playerOne}
         playerTwo={matchInfo.playerTwo}
@@ -333,12 +340,10 @@ export default BattleScreen;
 const styles = StyleSheet.create({
   balls: {
     width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
     marginTop: 10
   }
 });
 
 const determineWinner = (p1Score, p2Score, p1Name, p2Name) => {
-  return p1Score > p2Score ? p1Name : p1Score < p2Score ? p2Name : null;
+  return p1Score > p2Score ? p1Name : p1Score < p2Score ? p2Name : "DRAW";
 };

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import ColorBalls from "../ColorBalls";
 import Ball from "../Ball";
 import balls from "../../resources/ballInfo";
+import HorizontalFlexBox from "./HorizontalFlexBox";
 
 const PotActionBalls = props => {
   const {
@@ -18,20 +19,22 @@ const PotActionBalls = props => {
     const freeBallPoint = currentColor ? getCurrentColorScore(currentColor) : 1;
 
     return (
-      <Ball
-        text='Potted free ball'
-        score={freeBallPoint}
-        frameWinner={frameWinner}
-        handleClick={handleFreeBallPot}
-        currentColor={currentColor}
-      />
+      <HorizontalFlexBox justifyContent='center'>
+        <Ball
+          text='Potted free ball'
+          score={freeBallPoint}
+          frameWinner={frameWinner}
+          handleClick={handleFreeBallPot}
+          currentColor={currentColor}
+        />
+      </HorizontalFlexBox>
     );
   }
 
   if (currentColor) {
     const currentColorScore = getCurrentColorScore(currentColor);
     return (
-      <>
+      <HorizontalFlexBox justifyContent='center'>
         <Ball
           color={currentColor}
           score={currentColorScore}
@@ -39,19 +42,21 @@ const PotActionBalls = props => {
           handleClick={handlePot}
           currentColor={currentColor}
         />
-      </>
+      </HorizontalFlexBox>
     );
   }
 
   if (isRedNext) {
     return (
-      <Ball
-        color='red'
-        score={1}
-        frameWinner={frameWinner}
-        handleClick={handlePot}
-        currentColor={currentColor}
-      />
+      <HorizontalFlexBox justifyContent='center'>
+        <Ball
+          color='red'
+          score={1}
+          frameWinner={frameWinner}
+          handleClick={handlePot}
+          currentColor={currentColor}
+        />
+      </HorizontalFlexBox>
     );
   } else {
     return (

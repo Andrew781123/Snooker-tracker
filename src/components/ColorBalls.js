@@ -2,13 +2,13 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import balls from "../resources/ballInfo";
 import Ball from "./Ball";
-import SpaceAroundView from "./match/SpaceAroundView";
+import HorizontalFlexBox from "./match/HorizontalFlexBox";
 
 const ColorBalls = props => {
   const { handlePot, currentColor, frameWinner } = props;
 
   return (
-    <SpaceAroundView>
+    <HorizontalFlexBox justifyContent='space-around'>
       {balls.map(ball => (
         <Ball
           key={ball.score}
@@ -19,7 +19,7 @@ const ColorBalls = props => {
           currentColor={currentColor}
         />
       ))}
-    </SpaceAroundView>
+    </HorizontalFlexBox>
   );
 };
 

@@ -26,6 +26,7 @@ const Ball = props => {
         isDisable = true;
       }
     }
+    console.log(frameWinner, isDisable);
 
     setDisable(isDisable);
   }, [frameWinner, currentColor, props.text]);
