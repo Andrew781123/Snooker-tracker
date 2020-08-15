@@ -30,7 +30,7 @@ const initialMatchInfo = {
   instruction: null,
   foulOption: null,
   freeBallPoint: 1,
-  isFreeBall: false,
+  freeBallStage: null,
   frame: 1,
   framesInfo: [],
   currentBreak: 0,
@@ -118,11 +118,11 @@ const BattleScreen = props => {
     dispatch({ type: "FRAME_OVER", payload: winner });
 
     if (matchInfo.frame === frameNum) {
-      handleMatchOver();
+      handleMatchOver(winner);
     }
   };
 
-  const handleMatchOver = () => {
+  const handleMatchOver = winner => {
     //match over
     const matchWinner = determineMatchWinner(winner);
     if (matchWinner === "DRAW") return dispatch({ type: "MATCH_DRAW" });
@@ -200,6 +200,15 @@ const BattleScreen = props => {
     });
   };
 
+  const handleFreeBallPotColor = score => {
+    const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
+    const isUpdateHighestBreak = compareBreak(score, matchInfo[player]);
+    dispatch({
+      type: "FREE_BALL_POT_COLOR",
+      payload: { player, score, isUpdateHighestBreak }
+    });
+  };
+
   const handleFreeBallMiss = () => {
     const player = matchInfo.isPlayerOneTurn ? "playerOne" : "playerTwo";
     dispatch({ type: "FREE_BALL_MISS", payload: player });
@@ -268,7 +277,7 @@ const BattleScreen = props => {
       >
         <ActionButtons
           isRedNext={matchInfo.isRedNext}
-          isFreeBall={matchInfo.isFreeBall}
+          freeBallStage={matchInfo.freeBallStage}
           frameWinner={matchInfo.frameWinner}
           currentColor={matchInfo.currentColor}
           redsRemaining={matchInfo.redsRemaining}
@@ -285,6 +294,7 @@ const BattleScreen = props => {
             handleNonFreeBall
           }}
           handleFreeBallPot={handleFreeBallPot}
+          handleFreeBallPotColor={handleFreeBallPotColor}
           freeBallNonPotHandlers={{
             handleFreeBallMiss,
             handleFreeBallFoul,

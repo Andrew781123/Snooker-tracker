@@ -8,7 +8,7 @@ const NonPotActionBalls = props => {
     frameWinner,
     handleFoul,
     currentColor,
-    isFreeBall,
+    freeBallStage,
     handleSafety,
     handleMiss,
     handleFreeBallMiss,
@@ -21,19 +21,19 @@ const NonPotActionBalls = props => {
       <Ball
         text='foul'
         frameWinner={frameWinner}
-        handleClick={isFreeBall ? handleFreeBallFoul : handleFoul}
+        handleClick={freeBallStage ? handleFreeBallFoul : handleFoul}
         currentColor={currentColor}
       />
       <Ball
         text='safety'
         frameWinner={frameWinner}
-        handleClick={isFreeBall ? handleFreeBallSafety : handleSafety}
+        handleClick={freeBallStage ? handleFreeBallSafety : handleSafety}
         currentColor={currentColor}
       />
       <Ball
         text='miss'
         frameWinner={frameWinner}
-        handleClick={isFreeBall ? handleFreeBallMiss : handleMiss}
+        handleClick={freeBallStage ? handleFreeBallMiss : handleMiss}
         currentColor={currentColor}
       />
     </HorizontalFlexBox>

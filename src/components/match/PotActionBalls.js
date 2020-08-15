@@ -12,22 +12,44 @@ const PotActionBalls = props => {
     currentColor,
     frameWinner,
     handleFreeBallPot,
-    isFreeBall,
+    handleFreeBallPotColor,
+    freeBallStage,
     freeBallPoint
   } = props;
 
-  if (isFreeBall) {
-    return (
-      <HorizontalFlexBox justifyContent='center'>
-        <Ball
-          text='Potted free ball'
-          score={freeBallPoint}
-          frameWinner={frameWinner}
-          handleClick={handleFreeBallPot}
-          currentColor={currentColor}
-        />
-      </HorizontalFlexBox>
-    );
+  if (freeBallStage) {
+    switch (freeBallStage) {
+      case "FREE_BALL": {
+        return (
+          <HorizontalFlexBox justifyContent='center'>
+            <Ball
+              text='Potted free ball'
+              score={freeBallPoint}
+              frameWinner={frameWinner}
+              handleClick={handleFreeBallPot}
+              currentColor={currentColor}
+            />
+          </HorizontalFlexBox>
+        );
+      }
+
+      case "FREE_BALL_COLORS": {
+        let startIndex = 0;
+        for (let i = 0; i < balls.length; i++) {
+          if (currentColor === balls[i].color) break;
+          startIndex++;
+        }
+
+        return (
+          <ColorBalls
+            handlePot={handleFreeBallPotColor}
+            currentColor={null}
+            frameWinner={frameWinner}
+            startIndex={startIndex}
+          />
+        );
+      }
+    }
   }
 
   if (currentColor) {

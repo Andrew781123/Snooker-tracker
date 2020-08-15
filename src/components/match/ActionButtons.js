@@ -7,7 +7,7 @@ import PotActionBalls from "./PotActionBalls";
 const ActionButtons = props => {
   const {
     isRedNext,
-    isFreeBall,
+    freeBallStage,
     freeBallPoint,
     foulOption,
     frameWinner,
@@ -17,6 +17,7 @@ const ActionButtons = props => {
     nonPotActionHandler,
     foulOptionHandlers,
     handleFreeBallPot,
+    handleFreeBallPotColor,
     freeBallNonPotHandlers
   } = props;
 
@@ -35,8 +36,9 @@ const ActionButtons = props => {
           <View style={styles.potActionBallsContainer}>
             <PotActionBalls
               isRedNext={isRedNext}
-              isFreeBall={isFreeBall}
+              freeBallStage={freeBallStage}
               handleFreeBallPot={handleFreeBallPot}
+              handleFreeBallPotColor={handleFreeBallPotColor}
               handlePot={handlePot}
               currentColor={currentColor}
               frameWinner={frameWinner}
@@ -45,7 +47,7 @@ const ActionButtons = props => {
           </View>
           <NonPotActionBalls
             frameWinner={frameWinner}
-            isFreeBall={isFreeBall}
+            freeBallStage={freeBallStage}
             currentColor={currentColor}
             redsRemaining={redsRemaining}
             {...nonPotActionHandler}

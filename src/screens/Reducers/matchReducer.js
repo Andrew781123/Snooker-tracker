@@ -99,7 +99,7 @@ const matchReducer = (state, action) => {
 
       return {
         ...updatesOnMiss(state, player),
-        isFreeBall: false,
+        freeBallStage: null,
         isRedNext:
           state.currentColor || state.redsRemaining === 0 ? false : true,
         scoreRemaining: state.scoreRemaining - 8
@@ -123,9 +123,10 @@ const matchReducer = (state, action) => {
           state.redsRemaining === 0 ? state.currentColor || "yellow" : null,
         isRedNext: state.currentColor ? false : true,
         currentBreak: 0,
-        scoreRemaining: state.isRedNext
-          ? state.scoreRemaining
-          : state.scoreRemaining - 7
+        scoreRemaining:
+          state.isRedNext || state.currentColor
+            ? state.scoreRemaining
+            : state.scoreRemaining - 7
       };
     }
 
@@ -136,7 +137,7 @@ const matchReducer = (state, action) => {
         isRedNext:
           state.currentColor || state.redsRemaining === 0 ? false : true,
         scoreRemaining: state.scoreRemaining - 8,
-        isFreeBall: false
+        freeBallStage: null
       };
     }
 
@@ -147,9 +148,10 @@ const matchReducer = (state, action) => {
         ...updatesOnFoul(state, player),
         currentColor:
           state.redsRemaining === 0 ? state.currentColor || "yellow" : null,
-        scoreRemaining: state.isRedNext
-          ? state.scoreRemaining
-          : state.scoreRemaining - 7
+        scoreRemaining:
+          state.isRedNext || state.currentColor
+            ? state.scoreRemaining
+            : state.scoreRemaining - 7
       };
     }
 
@@ -159,7 +161,7 @@ const matchReducer = (state, action) => {
       return {
         ...updatesOnFoul(state, player),
         scoreRemaining: state.scoreRemaining - 8,
-        isFreeBall: false
+        freeBallStage: null
       };
     }
 
@@ -236,7 +238,7 @@ const matchReducer = (state, action) => {
         currentBreak: 0,
         isRedNext: state.redsRemaining <= 0 ? false : state.isRedNext,
         scoreRemaining: state.scoreRemaining + freeBallPoint + 7,
-        isFreeBall: true,
+        freeBallStage: "FREE_BALL",
         freeBallPoint
       };
     }
@@ -270,7 +272,28 @@ const matchReducer = (state, action) => {
         isRedNext: false,
         scoreRemaining: state.scoreRemaining - score,
 
-        isFreeBall: false
+        freeBallStage: "FREE_BALL_COLORS"
+      };
+    }
+
+    case "FREE_BALL_POT_COLOR": {
+      const { player, score, isUpdateHighestBreak } = action.payload;
+
+      return {
+        ...state,
+        [player]: {
+          ...state[player],
+          score: state[player].score + score,
+          attempt: state[player].attempt + 1,
+          ballsPotted: state[player].ballsPotted + 1,
+          highestBreak: isUpdateHighestBreak
+            ? state.currentBreak + score
+            : state[player].highestBreak
+        },
+        currentBreak: state.currentBreak + score,
+        scoreRemaining: state.scoreRemaining - 7,
+
+        freeBallStage: null
       };
     }
 
