@@ -66,7 +66,7 @@ router.get("/:userId/stats", async (req, res) => {
             }
           },
           winner: "$winner",
-          frames_played: "$frames_played"
+          frames_played: "$best_of_frames"
         }
       },
       {
@@ -151,7 +151,11 @@ router.get("/:userId/stats", async (req, res) => {
       return {
         $convert: {
           input: {
-            $round: [{ $divide: [numerator, denominator] }, 3]
+            $cond: {
+              if: { $eq: [denominator, 0] },
+              then: 0,
+              else: { $round: [{ $divide: [numerator, denominator] }, 3] }
+            }
           },
           to: "string"
         }

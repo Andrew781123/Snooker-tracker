@@ -35,6 +35,10 @@ const matchStatsSchema = new mongoose.Schema({
   fouls: {
     type: Number,
     required: true
+  },
+  foul_points_conceded: {
+    type: Number,
+    required: true
   }
 });
 
@@ -47,10 +51,6 @@ const matchSchema = new mongoose.Schema({
   player_two: matchStatsSchema,
   winner: {
     type: String
-  },
-  frames_played: {
-    type: Number,
-    required: true
   },
   best_of_frames: {
     type: Number,

@@ -10,6 +10,7 @@ import BigText from "../components/BigText";
 import Break from "../components/Break";
 import StatsModal from "../components/StatsModal";
 import ActionButtons from "../components/match/ActionButtons";
+import api from "../api/tracker";
 
 const initialPlayerInfo = {
   name: null,
@@ -51,17 +52,29 @@ const BattleScreen = props => {
     playerToBreakOff,
     frameNum,
     playerOneName,
-    playerTwoName
+    playerTwoName,
+    playerOneUserId = "1",
+    playerTwoUserId = "2"
   } = route.params;
 
   const [matchInfo, dispatch] = useReducer(matchReducer, initialMatchInfo);
 
   const [isShowStatsModal, setIsShowStatsModal] = useState(false);
 
+  const [isSaveingMatch, setIsSavingMatch] = useState(false);
+
+  const [saveMatchError, setSaveMatchError] = useState(null);
+
   useEffect(() => {
     dispatch({
       type: "MATCH_INIT",
-      payload: { playerToBreakOff, playerOneName, playerTwoName }
+      payload: {
+        playerToBreakOff,
+        playerOneName,
+        playerTwoName,
+        playerOneUserId,
+        playerTwoUserId
+      }
     });
   }, []);
 
@@ -126,6 +139,10 @@ const BattleScreen = props => {
     //match over
     const matchWinner = determineMatchWinner(winner);
     if (matchWinner === "DRAW") return dispatch({ type: "MATCH_DRAW" });
+
+    const fieldToEdit =
+      matchWinner === matchInfo.playerOne.name ? "playerOne" : "playerTwo";
+    dispatch({ type: "INCREMENT_FRAME", payload: fieldToEdit });
 
     return dispatch({ type: "MATCH_WINNER", payload: matchWinner });
   };
@@ -232,6 +249,39 @@ const BattleScreen = props => {
     dispatch({ type: "START_NEW_FRAME" });
   };
 
+  const saveMatch = async () => {
+    try {
+      const newMatch = {
+        date: new Date(),
+        player_one: generatePlayerStats("playerOne"),
+        player_two: generatePlayerStats("playerTwo"),
+        winner: matchInfo.matchWinner,
+        best_of_frames: frameNum
+      };
+      await api.put("/matches", newMatch);
+
+      navigation.navigate("Battle_Result");
+    } catch (err) {
+      console.log(error);
+      setSaveMatchError("Cannot save match, try again later");
+    }
+  };
+
+  const generatePlayerStats = player => {
+    return {
+      user_id: matchInfo[player].userId,
+      username: matchInfo[player].name,
+      attempts: matchInfo[player].attempt,
+      balls_potted: matchInfo[player].ballsPotted,
+      highest_break: matchInfo[player].highestBreak,
+      points_scored: matchInfo[player].pointsScored,
+      centuries: matchInfo[player].centuries,
+      frames_won: matchInfo[player].frame,
+      fouls: matchInfo[player].fouls,
+      foul_points_conceded: matchInfo[player].foulPointsConceded
+    };
+  };
+
   const compareBreak = (score, stat) => {
     return matchInfo.currentBreak + score > stat.highestBreak ? true : false;
   };
@@ -260,6 +310,7 @@ const BattleScreen = props => {
 
   return (
     <View>
+      {saveMatchError && <ErrorMessage errorMessage={saveMatchError} />}
       <Text>{matchInfo.redsRemaining}</Text>
       <Text>Match winner: {matchInfo.matchWinner}</Text>
       <BigText instruction={matchInfo.instruction} />
@@ -327,10 +378,7 @@ const BattleScreen = props => {
         />
       )}
       {matchInfo.matchWinner && (
-        <Button
-          title='End'
-          onPress={() => navigation.navigate("Battle_Result")}
-        />
+        <Button title='Save and leave' onPress={saveMatch} />
       )}
       <StatsModal
         playerOne={matchInfo.playerOne}

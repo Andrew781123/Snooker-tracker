@@ -1,19 +1,22 @@
 const express = require("express");
 const authUser = require("../middleware/authUser");
+const Match = require("../models/match");
 const router = express.Router();
 
-router.put("/matches", async (req, res) => {
-  const { date, player_one, player_two, winner, frames_played } = req.body;
+router.put("/", async (req, res) => {
+  const { date, player_one, player_two, winner, best_of_frames } = req.body;
 
   const newMatch = new Match({
     date,
     player_one,
     player_two,
     winner,
-    frames_played
+    best_of_frames
   });
   try {
-    await newMatch.save();
+    const savedMatch = await newMatch.save();
+
+    console.log(savedMatch);
 
     res.status(200).json({ message: "Match saved" });
   } catch (err) {

@@ -61,8 +61,16 @@ const matchReducer = (state, action) => {
 
         scoreRemaining: 8 * state.redsRemaining + 27,
         isPlayerOneTurn: playerToBreakOff === playerOneName ? true : false,
-        playerOne: { ...state.playerOne, name: playerOneName },
-        playerTwo: { ...state.playerTwo, name: playerTwoName }
+        playerOne: {
+          ...state.playerOne,
+          name: playerOneName,
+          userId: "5f2e20d25cb4c5235dfa8f7f"
+        },
+        playerTwo: {
+          ...state.playerTwo,
+          name: playerTwoName,
+          userId: "5f3cef93777c78285c2cf0d8"
+        }
       };
     }
 
@@ -357,6 +365,7 @@ const matchReducer = (state, action) => {
 
       return {
         ...state,
+        instruction: `${matchWinner} wins the match`,
         matchWinner
       };
     }

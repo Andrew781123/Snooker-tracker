@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
+import authContext from "../context/auth/authContext";
 
 const initialMatchState = {
   frameNum: 1,
@@ -12,6 +13,10 @@ const initialMatchState = {
 
 const NewBattleScreen = props => {
   const { navigation } = props;
+
+  const {
+    authState: { user: currentUser }
+  } = useContext(authContext);
 
   const [matchOptions, setMatchOptions] = useState(initialMatchState);
 
@@ -71,7 +76,6 @@ const NewBattleScreen = props => {
 
   return (
     <View>
-      <Text>New battle</Text>
       <View>
         <Text>Frame Number</Text>
         <View style={styles.frameOptionsStyle}>
@@ -82,7 +86,7 @@ const NewBattleScreen = props => {
         <View>
           <Text>Player to breakoff</Text>
           <View>
-            <Text>Player1</Text>
+            <Text>{currentUser.username}</Text>
             <CheckBox
               disabled={false}
               value={matchOptions.player_1BreakOff}
