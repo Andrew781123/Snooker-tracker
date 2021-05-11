@@ -12,6 +12,7 @@
 ### Home Screen
 - Combination of tabs navigator stacks navigator <br/>
 <br/>
+
 ![image](https://user-images.githubusercontent.com/61986168/117746240-aae84f80-b23e-11eb-80be-969d86532250.png)
 
 ### Scoreboard
