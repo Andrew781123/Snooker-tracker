@@ -20,13 +20,13 @@ const RootStack = () => {
     return <InitialLoadingScreen />;
   }
 
-  if (!user.user_info.isSet) {
-    return (
-      <Stack.Navigator headerMode='none'>
-        <Stack.Screen name='Initial_Setup' component={InitialSetupScreen} />
-      </Stack.Navigator>
-    );
-  }
+  // if (!user.user_info.isSet) {
+  //   return (
+  //     <Stack.Navigator headerMode='none'>
+  //       <Stack.Screen name='Initial_Setup' component={InitialSetupScreen} />
+  //     </Stack.Navigator>
+  //   );
+  // }
 
   return token ? (
     <Stack.Navigator headerMode='none'>

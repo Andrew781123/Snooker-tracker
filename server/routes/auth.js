@@ -10,6 +10,8 @@ router.post("/register", async (req, res) => {
     const newUser = new User({ username, password });
     const savedUser = await newUser.save();
 
+    console.log(savedUser);
+
     const token = jwt.sign(
       { userId: savedUser._id },
       process.env.JWT_SECRET_KEY

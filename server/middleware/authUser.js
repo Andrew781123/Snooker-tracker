@@ -3,6 +3,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const authUser = (req, res, next) => {
+  console.log("auth user");
   const { authorization } = req.headers;
 
   const token = authorization.replace("Bearer ", "");
@@ -15,6 +16,7 @@ const authUser = (req, res, next) => {
     }
 
     const { userId } = payload;
+    console.log(userId);
 
     const user = await User.findById(userId);
     req.user = user;

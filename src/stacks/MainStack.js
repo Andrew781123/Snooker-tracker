@@ -41,7 +41,7 @@ const MainStack = () => {
             return (
               <MaterialCommunityIcons name='target' size={24} color={color} />
             );
-          } else if (route.name === "Match") {
+          } else if (route.name === "Battle") {
             color = focused ? "tomato" : "black";
             return (
               <MaterialCommunityIcons
@@ -64,7 +64,7 @@ const MainStack = () => {
     >
       <Tab.Screen name='DashBoard' component={DashBoardStack} />
       <Tab.Screen name='Search' component={SearchStack} />
-      <Tab.Screen name='Match' component={BattleStack} />
+      <Tab.Screen name='Battle' component={BattleStack} />
       <Tab.Screen name='Goals' component={GoalsStack} />
       <Tab.Screen name='User_Profile' component={MyProfileStack} />
     </Tab.Navigator>
