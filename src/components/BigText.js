@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const BigText = ({ text }) => {
+const BigText = ({ instruction }) => {
   return (
     <View style={styles.bigTextContainer}>
-      <Text style={styles.bigText}>{text}</Text>
+      <Text style={styles.bigText}>{instruction}</Text>
     </View>
   );
 };

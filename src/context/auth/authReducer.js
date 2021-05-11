@@ -22,7 +22,8 @@ const authReducer = (state, action) => {
       return {
         ...state,
         token: action.token,
-        authLoading: false
+        authLoading: false,
+        user: action.user
       };
     }
     case "REGISTER_FAIL": {
@@ -33,6 +34,7 @@ const authReducer = (state, action) => {
       };
     }
     case "LOGIN": {
+      console.log("login");
       return {
         ...state,
         token: action.token,
@@ -59,6 +61,18 @@ const authReducer = (state, action) => {
       return {
         ...state,
         token: null
+      };
+    }
+    case "SETUP_USER_SUCCESS": {
+      return {
+        ...state,
+        user: action.updatedUser
+      };
+    }
+    case "SETUP_USER_FAIL": {
+      return {
+        ...state,
+        error: action.error
       };
     }
     case "CLEAR_ERRORS": {

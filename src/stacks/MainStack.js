@@ -6,21 +6,11 @@ import DashBoardStack from "./DashBoardStack";
 import BattleStack from "./BattleStack";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import GoalsStack from "./GoalsStack";
-import { createStackNavigator } from "@react-navigation/stack";
-import UserProfileScreen from "../screens/UserProfileScreen";
 import SearchStack from "./SearchStack";
-import authContext from "../context/auth/authContext";
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 const MainStack = () => {
-  const { getCurrentUser } = useContext(authContext);
-
-  useLayoutEffect(() => {
-    // getCurrentUser();
-  }, []);
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

@@ -3,6 +3,8 @@ import authContext from "./authContext";
 import authReducer from "./authReducer";
 import api from "../../api/tracker";
 import AsyncStorage from "@react-native-community/async-storage";
+import moment from "moment";
+import { createIconSetFromFontello } from "@expo/vector-icons";
 
 const initialState = {
   token: null,
@@ -57,7 +59,7 @@ const authProvider = ({ children }) => {
 
       dispatch({ type: "LOGIN", token: res.data.token, user: res.data.user });
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       dispatch({ type: "LOGIN_FAIL", errMsg: "Something wrong :(" });
     }
   };
@@ -85,6 +87,40 @@ const authProvider = ({ children }) => {
     dispatch({ type: "CLEAR_ERRORS" });
   };
 
+  const setupUser = async userInfo => {
+    const userId = authState.user._id;
+
+    const user_info = {
+      isSet: true,
+      favourite_player: userInfo.favouritePlayer,
+      experience: getYearDiff(userInfo.yearStarted),
+      bio: userInfo.bio
+    };
+
+    try {
+      const res = await api.put(`/users/${userId.toString()}`, {
+        user_info
+      });
+
+      dispatch({
+        type: "SETUP_USER_SUCCESS",
+        updatedUser: res.data.updatedUser
+      });
+    } catch (err) {
+      dispatch({
+        type: "SETUP_USER_FAIL",
+        error: "Something wrong while updating user profile"
+      });
+    }
+  };
+
+  const getYearDiff = year => {
+    const now = moment(new Date());
+    const started = moment([year, 0, 1]);
+
+    return now.diff(started, "years");
+  };
+
   return (
     <authContext.Provider
       value={{
@@ -95,7 +131,8 @@ const authProvider = ({ children }) => {
         devLogin,
         clearErrors,
         tryLogin,
-        getCurrentUser
+        getCurrentUser,
+        setupUser
       }}
     >
       {children}

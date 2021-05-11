@@ -1,23 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const userInfoSchema = new mongoose.Schema({
-  isSet: {
-    type: Boolean,
-    default: false
-  },
-  experience: {
-    type: Number,
-    requried: true
-  },
-  favourite_player: {
-    type: String
-  },
-  bio: {
-    type: String
-  }
-});
-
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -28,7 +11,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  user_info: userInfoSchema,
+  user_info: {
+    isSet: {
+      type: Boolean,
+      default: false
+    },
+    experience: {
+      type: Number,
+      requried: true
+    },
+    favourite_player: {
+      type: String
+    },
+    bio: {
+      type: String
+    }
+  },
   goals: [{ type: mongoose.Schema.Types.ObjectId, ref: "goal" }]
 });
 

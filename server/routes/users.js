@@ -21,6 +21,7 @@ router.get("/current", async (req, res) => {
 });
 
 router.get("/:userId/stats", async (req, res) => {
+  console.log("getting stats");
   const { userId } = req.params;
   const { num } = req.query;
 
@@ -65,7 +66,7 @@ router.get("/:userId/stats", async (req, res) => {
             }
           },
           winner: "$winner",
-          frames_played: "$frames_played"
+          frames_played: "$best_of_frames"
         }
       },
       {
@@ -142,13 +143,19 @@ router.get("/:userId/stats", async (req, res) => {
       }
     ]);
 
+    console.log(stats);
+
     res.status(200).json({ stats });
 
     function getFraction(numerator, denominator) {
       return {
         $convert: {
           input: {
-            $round: [{ $divide: [numerator, denominator] }, 3]
+            $cond: {
+              if: { $eq: [denominator, 0] },
+              then: 0,
+              else: { $round: [{ $divide: [numerator, denominator] }, 3] }
+            }
           },
           to: "string"
         }
@@ -178,21 +185,22 @@ router.get("/:userId/stats", async (req, res) => {
   }
 });
 
-router.put("/matches", async (req, res) => {
-  const { date, player_one, player_two, winner, frames_played } = req.body;
+router.put("/:userId", async (req, res) => {
+  const { userId } = req.params;
 
-  const newMatch = new Match({
-    date,
-    player_one,
-    player_two,
-    winner,
-    frames_played
-  });
   try {
-    await newMatch.save();
+    const user = await User.findById(userId);
 
-    res.status(200).json({ message: "Match saved" });
-  } catch (err) {
+    if (!user) return res.status(404).json({ errorMessage: "User not found" });
+
+    for (const field in req.body) {
+      user[field] = req.body[field];
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({ updatedUser });
+  } catch {
     console.log(err);
     res.status(500).json({ errorMessage: err.message });
   }
