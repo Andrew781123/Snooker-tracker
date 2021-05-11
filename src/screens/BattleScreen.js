@@ -311,17 +311,12 @@ const BattleScreen = props => {
   return (
     <View>
       {saveMatchError && <ErrorMessage errorMessage={saveMatchError} />}
-      <Text>{matchInfo.redsRemaining}</Text>
-      <Text>Match winner: {matchInfo.matchWinner}</Text>
       <BigText instruction={matchInfo.instruction} />
       {matchInfo.frameWinner && !matchInfo.matchWinner && (
         <TouchableOpacity onPress={startNewFrame}>
           <Text>New Frame</Text>
         </TouchableOpacity>
       )}
-      <View>
-        <Text>{playerToBreakOff} break off</Text>
-      </View>
       <View
         style={styles.actionButtonsContainer}
         pointerEvents={matchInfo.frameWinner ? "none" : "auto"}

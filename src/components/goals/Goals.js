@@ -72,7 +72,6 @@ const Goals = props => {
               renderItem={renderNotCompleted}
               keyExtractor={item => item._id.toString()}
             />
-            <Button onPress={() => console.log(goals)} title='log goals' />
           </>
         ) : (
           <FlatList

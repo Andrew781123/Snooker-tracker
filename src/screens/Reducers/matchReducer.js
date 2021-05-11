@@ -78,7 +78,7 @@ const matchReducer = (state, action) => {
       const { score, isUpdateHighestBreak, player } = action.payload;
       return {
         ...updatesOnPot(state, player, score, isUpdateHighestBreak),
-        instruction: `${player.name}'s turn`,
+        instruction: `Andrew's turn`,
         scoreRemaining: state.isRedNext
           ? state.scoreRemaining - 1
           : state.scoreRemaining - 7,
